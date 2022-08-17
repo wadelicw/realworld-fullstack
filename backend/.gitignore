@@ -39,3 +39,4 @@ data
 .todo
 test.js
 .coverage
+.temp

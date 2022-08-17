@@ -1,15 +1,18 @@
 "use strict";
 
 const app = require("./app");
+const logger = require("./utils/logger");
+
 const PORT = process.env.PORT || 3100;
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 app.listen(
 	PORT,
 	(error) => {
 		if (error) {
-			return console.error(error);
+			return logger.error(error);
 		} else {
-			return console.log("Server has listen at PORT #" + PORT);
+			return logger[IS_PRODUCTION ? "info" : "debug"](`The server listens at port ${PORT}`, { label: "App" });
 		}
 	}
 );
