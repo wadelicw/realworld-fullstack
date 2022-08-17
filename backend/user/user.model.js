@@ -9,6 +9,9 @@ const jsonwebtoken = require("jsonwebtoken");
 const knex = require("../utils/database");
 
 function User(body) {
+
+    // If the function wasn't called as a constructor,
+    // call it as a constructor and return the result
     if (!(this instanceof User)) {
         return new User(body);
     }
@@ -30,7 +33,7 @@ User.findOne = async function (key, value) {
 };
 
 User.getById = function (id) {
-	return this.findOne("UserId", id);
+    return this.findOne("UserId", id);
 };
 
 User.getByEmail = function (email) {
@@ -58,33 +61,54 @@ User.register = async function (email, name, password) {
 };
 
 User.prototype.validate = async function (password) {
-	const {
-		salt,
-		hash
-	} = await knex
-		.table("User")
-		.first("hash", "salt")
-		.where("UserId", this.id);
+    const {
+        salt,
+        hash
+    } = await knex
+        .table("User")
+        .first("hash", "salt")
+        .where("UserId", this.id);
 
-	const hashed = crypto.pbkdf2Sync(password, salt, 100, 32, "sha256").toString("hex");
-	return hashed === hash;
+    const hashed = crypto.pbkdf2Sync(password, salt, 100, 32, "sha256").toString("hex");
+    return hashed === hash;
 };
 
 User.prototype.generateJWTToken = function () {
-	return jsonwebtoken.sign(
-		{
-			version: 1,
-			auth_time: moment().unix(),
-			id: this.id,
-			email: this.email
-		},
-		process.env.AUTH_SIGNATURE,
-		{
-			expiresIn: "10 days",
-			issuer: "Wade Li",
-			jwtid: UUID.v4()
-		}
-	);
+    return jsonwebtoken.sign(
+        {
+            version: 1,
+            auth_time: moment().unix(),
+            id: this.id,
+            email: this.email
+        },
+        process.env.AUTH_SIGNATURE,
+        {
+            expiresIn: "10 days",
+            issuer: "Wade Li",
+            jwtid: UUID.v4()
+        }
+    );
+};
+
+User.prototype.update = async function (payload) {
+    const updates = {
+        email: payload.email,
+        name: payload.name,
+        image: payload.image,
+        bio: payload.bio
+    };
+
+    if (payload.password) {
+        updates.salt = crypto.randomBytes(16).toString("hex");
+        updates.hash = crypto.pbkdf2Sync(payload.password, updates.salt, 100, 32, "sha256").toString("hex");
+    }
+
+    await knex
+        .table("User")
+        .update(updates)
+        .where("UserId", this.id);
+
+    return User.getById(this.id);
 };
 
 module.exports = User;

@@ -73,9 +73,36 @@ async function register(req, res) {
 	}
 }
 
+async function update(req, res) {
+	const payload = req.body.user;
+	let { user } = req;
+
+	try {
+		// The User.update function will return the new user document after update
+		user = await user.update(payload);
+
+		req.user = user;
+		return getMe(req, res);
+	} catch (error) {
+		if (error.code === "ER_DUP_ENTRY") {
+			return res
+				.status(400)
+				.json({
+					errors: {
+						message: "The email or username has been taken already. Please choose another username or email."
+					}
+				});
+		}
+
+		// Log the internal error for debugging
+		logger.error(error, { label: "User" });
+		return res.status(500).send();
+	}
+}
+
 module.exports = {
 	login,
 	register,
-	// getMe,
-	// update
+	getMe,
+	update
 };

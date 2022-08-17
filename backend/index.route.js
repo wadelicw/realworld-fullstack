@@ -11,7 +11,7 @@ router.get(
     (req, res) => res.send("OK")
 );
 
-router.use("/user", require("./user/user.route"));
+router.use("/", require("./user/user.route"));
 
 router.use((error, req, res, next) => {
 
