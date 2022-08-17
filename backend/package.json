@@ -1,5 +1,5 @@
 {
-  "name": "realword-backend",
+  "name": "realworld-backend",
   "version": "1.0.0",
   "description": "realworld backend demo project built with Express.js + Knex",
   "main": "index.js",
