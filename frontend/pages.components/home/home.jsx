@@ -1,7 +1,7 @@
 import React from "react";
 import { NextSeo } from "next-seo";;
 
-class Dashboard extends React.Component {
+class Home extends React.Component {
 
     render() {
         return (
@@ -96,4 +96,4 @@ class Dashboard extends React.Component {
 
 }
 
-export default Dashboard;
+export default Home;

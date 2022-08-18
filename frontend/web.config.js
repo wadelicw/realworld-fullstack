@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = {
-    app: "RealWorld",
+    title: "RealWorld",
     description: "RealWorld Example App",
     keywords: "RealWorld Demo",
 };

@@ -2,8 +2,14 @@ import Head from "next/head";
 import NextApp from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { DefaultSeo } from "next-seo";
+import { Provider } from "react-redux";
 
+import Navbar from "../components/Navbar"
+import Footer from "../components/Footer"
 import webConfig from "../web.config";
+import { wrapper } from "../store";
+
+import "../styles/main.scss";
 
 class App extends NextApp {
 
@@ -20,18 +26,20 @@ class App extends NextApp {
 				<NextNProgress color="#ff9532" />
 				<DefaultSeo
 					title="Home"
-					titleTemplate={`${webConfig.app} - %s`}
+					titleTemplate={`${webConfig.title} - %s`}
 					description={webConfig.description}
 					additionalMetaTags={[{
 						name: "keywords",
 						content: webConfig.keywords
 					}]}
 				/>
+				<Navbar />
 				<Component {...pageProps} />
+				<Footer />
 			</>
 		);
 	}
 
 }
 
-export default App;
+export default wrapper.withRedux(App);
