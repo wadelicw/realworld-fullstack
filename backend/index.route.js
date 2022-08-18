@@ -20,21 +20,6 @@ router.use((error, req, res, next) => {
         res.status(error.statusCode).json(error);
     }
 
-    switch (error.status) {
-		case 400:
-		case 401:
-		case 403:
-		case 404:
-			res.status(error.status).json({});
-			break;
-
-		case 500:
-		default:
-            logger.error(error, { label: "Unexpected Error" });
-			res.status(500).json({});
-			break;
-    }
-    
     return next(error);
 });
 

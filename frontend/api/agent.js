@@ -7,9 +7,9 @@ function get() {
 	// const access_token = store.getStore().getState().base.access_token;
 	const headers = {};
 
-	if (access_token) {
-		headers["Authorization"] = `Bearer ${access_token}`;
-	}
+	// if (access_token) {
+	// 	headers["Authorization"] = `Bearer ${access_token}`;
+	// }
 
 	const agent = axios.create({
 		baseURL: process.env.NEXT_PUBLIC_DOMAIN ?? "http://localhost:3200",
@@ -22,10 +22,8 @@ function get() {
 		.use(
 			null,
 			function (error) {
-				const serverMessage = error?.response?.data?.error?.message;
-				if (serverMessage) {
-					error.message = serverMessage;
-				}
+				error.message = error?.response?.statusText;
+				error.status = error?.response?.status;
 				return Promise.reject(error);
 			}
 		);

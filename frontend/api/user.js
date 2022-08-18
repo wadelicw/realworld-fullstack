@@ -3,10 +3,10 @@ const agent = require("./agent");
 
 module.exports = {
 
-    login(body) {
+    login(user) {
         return agent
             .get()
-            .post("/api/users/login", body)
+            .post("/api/users/login", { user })
             .then(response => response.data);
     },
 
