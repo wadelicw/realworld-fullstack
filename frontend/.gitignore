@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 /dist
+.next
 
 # IDEs and editors
 /.idea
