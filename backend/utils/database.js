@@ -6,10 +6,10 @@ const database = knex({
 	pool: {
 		min: 2,
 		max: 5
-    },
-    useNullAsDefault: true,
+	},
+	useNullAsDefault: true,
 	connection: {
-		database:"RealWorldDb",
+		database: "RealWorldDb",
 		host: process.env.DB_HOST,
 		port: process.env.DB_PORT || 3306,
 		user: process.env.DB_USERNAME,
