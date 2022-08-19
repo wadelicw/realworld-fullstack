@@ -11,8 +11,7 @@ app.listen(
 	(error) => {
 		if (error) {
 			return logger.error(error);
-		} else {
-			return logger[IS_PRODUCTION ? "info" : "debug"](`The server listens at port ${PORT}`, { label: "App" });
 		}
+		return logger[IS_PRODUCTION ? "info" : "debug"](`The server listens at port ${PORT}`, { label: "App" });
 	}
 );

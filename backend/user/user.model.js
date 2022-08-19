@@ -9,7 +9,6 @@ const jsonwebtoken = require("jsonwebtoken");
 const knex = require("../utils/database");
 
 function User(body) {
-
 	// If the function wasn't called as a constructor,
 	// call it as a constructor and return the result
 	if (!(this instanceof User)) {

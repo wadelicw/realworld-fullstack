@@ -24,8 +24,8 @@ const login = {
 	body: Joi.object({
 		user: Joi
 			.object({
-				email: email,
-				password: password
+				email,
+				password
 			})
 			.required()
 	})
@@ -35,9 +35,9 @@ const register = {
 	body: Joi.object({
 		user: Joi
 			.object({
-				name: name,
-				email: email,
-				password: password
+				name,
+				email,
+				password
 			})
 			.required()
 	})
@@ -47,8 +47,8 @@ const update = {
 	body: Joi.object({
 		user: Joi
 			.object({
-				name: name,
-				email: email,
+				name,
+				email,
 				bio: Joi
 					.string()
 					.description("A short description about the user"),
