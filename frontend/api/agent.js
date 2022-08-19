@@ -22,8 +22,10 @@ function get() {
 		.use(
 			null,
 			function (error) {
-				error.message = error?.response?.statusText;
-				error.status = error?.response?.status;
+				console.log(error.response)
+				error.message = error?.response?.data?.message;
+				error.status = error?.response?.data?.statusCode;
+				error.code = error?.response?.data?.code;
 				return Promise.reject(error);
 			}
 		);

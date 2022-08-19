@@ -44,13 +44,35 @@ class Login extends React.Component {
         this.setState({ loading: true });
 
         try {
-            const { user } = await api.user.login({ email, password });
+            const { user } = await api.user.login({ email, password });;
             this.props.setUser({ user: user.name, accessToken: user.token });
             localStorage.setItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY, user.token);
             // return Router.replace("/");
         } catch (error) {
             console.error(error);
-            window.alert(error?.status === 400 ? "Invalid Name or Password" : error.message);
+            window.alert(error?.message);
+            return this.setState({ loading: false });
+        }
+    }
+
+    @autobind
+    async register() {
+        const { email, password, name } = this.state.payload;
+
+        if (email.trim() === "" || password.trim() === "" || name.trim() === "") {
+            return window.alert("email, password and name can't be empty");
+        }
+
+        this.setState({ loading: true });
+
+        try {
+            const { user } = await api.user.register({ email, password, name });
+            this.props.setUser({ user: user.name, accessToken: user.token });
+            localStorage.setItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY, user.token);
+            // return Router.replace("/");
+        } catch (error) {
+            console.error(error);
+            window.alert(error?.message);
             return this.setState({ loading: false });
         }
     }
@@ -77,13 +99,6 @@ class Login extends React.Component {
                                     </a>
                                 </p>
 
-                                {
-                                    !isLogin && (
-                                        <ul className="error-messages">
-                                            <li>That email is already taken</li>
-                                        </ul>
-                                    )
-                                }
                                 <form>
                                     {
                                         !isLogin && (

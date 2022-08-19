@@ -12,7 +12,7 @@ function getMe(req, res) {
 }
 
 async function login(req, res) {
-	
+
 	const payload = req.body.user;
 
 	const user = await User.getByEmail(payload.email);
@@ -21,9 +21,7 @@ async function login(req, res) {
 		return res
 			.status(400)
 			.json({
-				errors: {
-					message: "User not found."
-				}
+				message: "User not found."
 			});
 	}
 
@@ -33,9 +31,7 @@ async function login(req, res) {
 		return res
 			.status(401)
 			.json({
-				errors: {
-					message: "Password not match"
-				}
+				message: "Password not match"
 			});
 	}
 
@@ -63,9 +59,8 @@ async function register(req, res) {
 			return res
 				.status(400)
 				.json({
-					errors: {
-						message: "Either the name or email has been taken by another user. Please use another name or email."
-					}
+					message: "The email or username has been taken already. Please choose another username or email.",
+					code: "ER_DUP_ENTRY"
 				});
 		}
 
@@ -89,9 +84,8 @@ async function update(req, res) {
 			return res
 				.status(400)
 				.json({
-					errors: {
-						message: "The email or username has been taken already. Please choose another username or email."
-					}
+					message: "The email or username has been taken already. Please choose another username or email.",
+					code: "ER_DUP_ENTRY"
 				});
 		}
 

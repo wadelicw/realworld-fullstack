@@ -10,10 +10,10 @@ module.exports = {
             .then(response => response.data);
     },
 
-    register(body) {
+    register(user) {
         return agent
             .get()
-            .post("/api/users", body)
+            .post("/api/users", { user })
             .then(response => response.data);
     }
 
