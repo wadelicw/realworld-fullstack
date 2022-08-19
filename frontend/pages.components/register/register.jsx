@@ -17,7 +17,7 @@ import { setUser } from "../../features/user/userSlice";
 	}),
 	{ setUser }
 )
-class Login extends React.Component {
+class Register extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -31,17 +31,17 @@ class Login extends React.Component {
 	}
 
 	@autobind
-	async login() {
-		const { email, password } = this.state.payload;
+	async register() {
+		const { email, password, name } = this.state.payload;
 
-		if (email.trim() === "" || password.trim() === "") {
-			return window.alert("email and password can't be empty");
+		if (email.trim() === "" || password.trim() === "" || name.trim() === "") {
+			return window.alert("email, password and name can't be empty");
 		}
 
 		this.setState({ loading: true });
 
 		try {
-			const { user } = await api.user.login({ email, password });;
+			const { user } = await api.user.register({ email, password, name });
 			this.props.setUser({ user: user.name, accessToken: user.token });
 			localStorage.setItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY, user.token);
 			// return Router.replace("/");
@@ -53,7 +53,7 @@ class Login extends React.Component {
 	}
 
 	render() {
-		console.log(this.props.user)
+
 		return (
 			<>
 				<NextSeo title="Login" />
@@ -64,17 +64,32 @@ class Login extends React.Component {
 						<div className="row">
 							<div className="col-md-6 offset-md-3 col-xs-12">
 								<h1 className="text-xs-center">
-									Sign In
+									Sign up
 								</h1>
 								<p className="text-xs-center">
-									<Link href="./register">
+									<Link href="/login">
 										<a>
-											Need an account?
+											Have an account?
 										</a>
 									</Link>
 								</p>
 
 								<form>
+									<fieldset className="form-group">
+										<input
+											className="form-control form-control-lg"
+											type="text"
+											placeholder="Your Name"
+											onChange={event =>
+												this.setState(
+													Immutable
+														.Map(this.state)
+														.setIn(["payload", "name"], event.target.value)
+														.toJS()
+												)
+											}
+										/>
+									</fieldset>
 									<fieldset className="form-group">
 										<input
 											className="form-control form-control-lg"
@@ -109,10 +124,10 @@ class Login extends React.Component {
 										className="btn btn-lg btn-primary pull-xs-right"
 										onClick={(event) => {
 											event.preventDefault();
-											this.login();
+											this.register();
 										}}
 									>
-										Sign In
+										Sign Up
 									</button>
 								</form>
 							</div>
@@ -125,4 +140,4 @@ class Login extends React.Component {
 
 }
 
-export default Login;
+export default Register;

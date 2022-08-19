@@ -1,3 +1,3 @@
-import Page from "../pages.components/login";
+import Page from "../pages.components/register";
 
 export default Page;

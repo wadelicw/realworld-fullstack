@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import autobind from "autobind-decorator";
 import classnames from "classnames";
 import { withRouter } from "next/router";
@@ -45,26 +46,28 @@ class Main extends React.Component {
                         	</a>
 						</li>
 						<li className="nav-item">
-							<a
-								className={classnames(
-									"nav-link",
-									path === "/login" ? "active" : undefined
-								)}
-								href="/login"
-							>
-								Sign in
-							</a>
+							<Link href="/login">
+								<a
+									className={classnames(
+										"nav-link",
+										path === "/login" ? "active" : undefined
+									)}
+								>
+									Sign in
+								</a>
+							</Link>
 						</li>
 						<li className="nav-item">
-							<a
-								className={classnames(
-									"nav-link",
-									path === "/register" ? "active" : undefined
-								)}
-								href="/register"
-							>
-								Sign up
-							</a>
+							<Link href="/register">
+								<a
+									className={classnames(
+										"nav-link",
+										path === "/register" ? "active" : undefined
+									)}
+								>
+									Sign up
+								</a>
+							</Link>
 						</li>
 					</ul>
 				</div>
