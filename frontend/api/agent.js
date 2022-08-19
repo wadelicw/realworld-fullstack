@@ -1,9 +1,9 @@
 "use strict";
+
 const axios = require("axios");
-const store = require("../store");
+// const store = require("../store");
 
 function get() {
-
 	// const access_token = store.getStore().getState().base.access_token;
 	const headers = {};
 
@@ -21,8 +21,7 @@ function get() {
 		.response
 		.use(
 			null,
-			function (error) {
-				console.log(error.response)
+			(error) => {
 				error.message = error?.response?.data?.message;
 				error.status = error?.response?.data?.statusCode;
 				error.code = error?.response?.data?.code;

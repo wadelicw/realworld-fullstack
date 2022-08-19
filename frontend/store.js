@@ -8,7 +8,7 @@ const combineReducer = combineReducers({
 
 const makeStore = () => configureStore({
 	reducer: combineReducer,
-	devTools: true,
+	devTools: true
 });
 
-export const wrapper = createWrapper(makeStore);
+export default createWrapper(makeStore);

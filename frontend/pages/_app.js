@@ -2,17 +2,15 @@ import Head from "next/head";
 import NextApp from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { DefaultSeo } from "next-seo";
-import { Provider } from "react-redux";
 
-import Navbar from "../components/Navbar"
-import Footer from "../components/Footer"
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import webConfig from "../web.config";
-import { wrapper } from "../store";
+import wrapper from "../store";
 
 import "../styles/main.scss";
 
 class App extends NextApp {
-
 	render() {
 		const { Component, pageProps } = this.props;
 		return (
@@ -39,7 +37,6 @@ class App extends NextApp {
 			</>
 		);
 	}
-
 }
 
 export default wrapper.withRedux(App);

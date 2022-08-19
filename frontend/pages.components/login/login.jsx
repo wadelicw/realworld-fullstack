@@ -1,8 +1,7 @@
 import React from "react";
-import Router from "next/router";
+// import Router from "next/router";
 import autobind from "autobind-decorator";
 import Immutable from "immutable";
-
 import { NextSeo } from "next-seo";
 import { connect } from "react-redux";
 import { withRouter } from "next/router";
