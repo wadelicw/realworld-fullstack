@@ -9,15 +9,13 @@ class Main extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {
-			path: this.props.router.pathname
-		};
+		this.state = {};
 	}
 
 	@autobind
 	renderNavbar() {
 
-		const { path } = this.state;
+		const  path = this.props.router.pathname;
 
 		return (
 			<nav className="navbar navbar-light">
