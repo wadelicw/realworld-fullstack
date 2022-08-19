@@ -1,9 +1,10 @@
 import React from "react";
+import autobind from "autobind-decorator";
 import classnames from "classnames";
 import { withRouter } from "next/router";
 
 @withRouter
-class Navbar extends React.Component {
+class Main extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -12,7 +13,8 @@ class Navbar extends React.Component {
 		};
 	}
 
-	render() {
+	@autobind
+	renderNavbar() {
 
 		const { path } = this.state;
 
@@ -70,6 +72,31 @@ class Navbar extends React.Component {
 		);
 	}
 
+	@autobind
+	renderFooter() {
+		return (
+			<footer>
+				<div className="container">
+					<a href="/" className="logo-font">conduit</a>
+					<span className="attribution">
+						An interactive learning project from <a href="https://thinkster.io">Thinkster</a>. Code &amp; design licensed under MIT.
+					</span>
+				</div>
+			</footer>
+		);
+	}
+
+	render() {
+
+		return (
+			<>
+				<this.renderNavbar />
+				{this.props.children}
+				<this.renderFooter />
+			</>
+		);
+	}
+
 }
 
-export default Navbar;
+export default Main;

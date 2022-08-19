@@ -3,8 +3,7 @@ import NextApp from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { DefaultSeo } from "next-seo";
 
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Main from "../components/Main";
 import webConfig from "../web.config";
 import wrapper from "../store";
 
@@ -31,9 +30,9 @@ class App extends NextApp {
 						content: webConfig.keywords
 					}]}
 				/>
-				<Navbar />
-				<Component {...pageProps} />
-				<Footer />
+				<Main>
+					<Component {...pageProps} />
+				</Main>
 			</>
 		);
 	}
