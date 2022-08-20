@@ -1,14 +1,28 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import thunkMiddleware from "redux-thunk";
 import { createWrapper } from "next-redux-wrapper";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
+
 import user from "./features/user/userSlice";
+
+let store;
 
 const combineReducer = combineReducers({
 	user
 });
 
-const makeStore = () => configureStore({
+const configStore = () => configureStore({
 	reducer: combineReducer,
-	devTools: true
+	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunkMiddleware),
+	devTools: process.env.NODE_ENV !== "production"
 });
 
-export default createWrapper(makeStore);
+export const makeStore = () => {
+	store = configStore();
+	return store;
+};
+
+export const wrapper = createWrapper(makeStore);
+
+export function getStore() {
+	return store;
+}

@@ -5,7 +5,7 @@ import { DefaultSeo } from "next-seo";
 
 import Main from "../components/Main";
 import webConfig from "../web.config";
-import wrapper from "../store";
+import { wrapper } from "../store";
 
 import "../styles/main.scss";
 
