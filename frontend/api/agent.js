@@ -12,7 +12,7 @@ function get() {
 	}
 
 	const agent = axios.create({
-		baseURL: process.env.NEXT_PUBLIC_DOMAIN ?? "http://localhost:3200",
+		baseURL: process.env.NEXT_PUBLIC_DOMAIN,
 		headers
 	});
 

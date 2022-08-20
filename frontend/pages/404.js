@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { NextSeo } from "next-seo";
 import webConfig from "../web.config";
 
@@ -11,7 +12,7 @@ export default function NotFoundPage() {
 					<div>
 						<h3>Not Found</h3>
 						<p>This page could not be found</p>
-						<p>Click <a href="/">here</a> to go to {webConfig.title} &apos;s home page</p>
+						<p>Click <Link href="/"><a>here</a></Link> to go to {webConfig.title} &apos;s home page</p>
 					</div>
 				</div>
 			</div>

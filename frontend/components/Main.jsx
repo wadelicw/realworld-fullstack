@@ -6,42 +6,50 @@ import { withRouter } from "next/router";
 
 @withRouter
 class Main extends React.Component {
-
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {
+			brand: "conduit"
+		};
 	}
 
 	@autobind
 	renderNavbar() {
-
-		const  path = this.props.router.pathname;
+		const path = this.props.router.pathname;
+		const { brand } = this.state;
 
 		return (
 			<nav className="navbar navbar-light">
 				<div className="container">
-					<a className="navbar-brand" href="/">conduit</a>
+					<Link href="/">
+						<a className="navbar-brand">{brand}</a>
+					</Link>
 					<ul className="nav navbar-nav pull-xs-right">
 						<li className="nav-item">
-							<a
-								className={classnames(
-									"nav-link",
-									path === "/" ? "active" : undefined
-								)}
-								href="/"
-							>
-								Home
-							</a>
+							<Link href="/">
+								<a
+									className={classnames(
+										"nav-link",
+										path === "/" ? "active" : undefined
+									)}
+								>
+									Home
+								</a>
+							</Link>
 						</li>
 						<li className="nav-item">
-							<a className="nav-link" href="">
-								<i className="ion-compose"></i>&nbsp;New Article
-                        	</a>
+							<Link href="">
+								<a className="nav-link" >
+									<i className="ion-compose"></i>&nbsp;New Article
+								</a>
+							</Link>
 						</li>
 						<li className="nav-item">
-							<a className="nav-link" href="">
-								<i className="ion-gear-a"></i>&nbsp;Settings
-                        	</a>
+							<Link href="">
+								<a className="nav-link">
+									<i className="ion-gear-a"></i>&nbsp;Settings
+								</a>
+							</Link>
 						</li>
 						<li className="nav-item">
 							<Link href="/login">
@@ -75,10 +83,14 @@ class Main extends React.Component {
 
 	@autobind
 	renderFooter() {
+		const { brand } = this.state;
+
 		return (
 			<footer>
 				<div className="container">
-					<a href="/" className="logo-font">conduit</a>
+					<Link href="/">
+						<a className="logo-font">{brand}</a>
+					</Link>
 					<span className="attribution">
 						An interactive learning project from <a href="https://thinkster.io">Thinkster</a>. Code &amp; design licensed under MIT.
 					</span>
@@ -88,7 +100,6 @@ class Main extends React.Component {
 	}
 
 	render() {
-
 		return (
 			<>
 				<this.renderNavbar />
@@ -97,7 +108,6 @@ class Main extends React.Component {
 			</>
 		);
 	}
-
 }
 
 export default Main;
