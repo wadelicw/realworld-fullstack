@@ -36,7 +36,7 @@ yarn-error.log*
 # tmp
 data
 .env
-.env.production
+.env.development
 .todo
 test.js
 .coverage
