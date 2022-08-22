@@ -16,6 +16,8 @@ services:
   realworld-backend:
     build: ./backend
     container_name: realworld-backend
+    volumes:
+      - ~/.aws/credentials:/root/.aws/credentials:z
     restart: unless-stopped
     command: npm start
     logging:
@@ -27,6 +29,7 @@ services:
       - TZ=UTC
       - PORT=3100
       - NODE_ENV=production 
+      - AWS_PROFILE=wade
 
   realworld-frontend:
     build: ./frontend
