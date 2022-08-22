@@ -5,11 +5,8 @@ const AWS = require("aws-sdk");
 const mem = require("mem");
 const logger = require("./utils/logger");
 
-if (process.env.NODE_ENV === "development") {
-	const credentials = new AWS.SharedIniFileCredentials({ profile: "wade" });
-	AWS.config.credentials = credentials;
-}
-
+const credentials = new AWS.SharedIniFileCredentials({ profile: "wade" });
+AWS.config.credentials = credentials;
 const ssm = new AWS.SSM({
 	region: "ap-east-1"
 });
