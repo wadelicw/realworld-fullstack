@@ -27,11 +27,6 @@ services:
       - TZ=UTC
       - PORT=3100
       - NODE_ENV=production 
-      - AUTH_SIGNATURE=507ea5d4493eece03050d2ebf025c811
-      - DB_HOST=host.docker.internal
-      - DB_PORT=3306
-      - DB_USERNAME=root
-      - DB_PASSWORD=wadelicw
 
   realworld-frontend:
     build: ./frontend

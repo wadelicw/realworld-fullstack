@@ -1,7 +1,5 @@
 "use strict";
 
-require("dotenv").config();
-
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");

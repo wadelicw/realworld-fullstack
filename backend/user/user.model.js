@@ -6,7 +6,9 @@ const crypto = require("crypto");
 const moment = require("moment");
 const jsonwebtoken = require("jsonwebtoken");
 
+const getConfig = require("../config");
 const knex = require("../utils/database");
+
 
 function User(body) {
 	// If the function wasn't called as a constructor,
@@ -72,7 +74,8 @@ User.prototype.validate = async function (password) {
 	return hashed === hash;
 };
 
-User.prototype.generateJWTToken = function () {
+User.prototype.generateJWTToken = async function () {
+	const config = await getConfig();
 	return jsonwebtoken.sign(
 		{
 			version: 1,
@@ -80,7 +83,7 @@ User.prototype.generateJWTToken = function () {
 			id: this.id,
 			email: this.email
 		},
-		process.env.AUTH_SIGNATURE,
+		config.AUTH_SIGNATURE,
 		{
 			expiresIn: "10 days",
 			issuer: "Wade Li",

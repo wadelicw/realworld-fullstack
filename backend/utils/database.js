@@ -1,20 +1,24 @@
 "use strict";
 
 const knex = require("knex");
+const getConfig = require("../config");
 
 const database = knex({
-	client: "mysql",
+	client: "mysql2",
 	pool: {
 		min: 2,
 		max: 5
 	},
 	useNullAsDefault: true,
-	connection: {
-		database: "RealWorldDb",
-		host: process.env.DB_HOST,
-		port: process.env.DB_PORT || 3306,
-		user: process.env.DB_USERNAME,
-		password: process.env.DB_PASSWORD
+	connection: async () => {
+		const config = await getConfig();
+		return {
+			database: "RealWorldDb",
+			host: config.DB_HOST,
+			port: config.DB_PORT,
+			user: config.DB_USERNAME,
+			password: config.DB_PASSWORD
+		}
 	}
 });
 

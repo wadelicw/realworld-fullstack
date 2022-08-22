@@ -4,14 +4,15 @@ const _ = require("lodash");
 const User = require("./user.model");
 const logger = require("../utils/logger");
 
-function getMe(req, res) {
+async function getMe(req, res) {
 	const { user } = req;
-	user.token = user.generateJWTToken();
+	user.token = await user.generateJWTToken();
 
 	return res.json({ user: _.pick(user, ["email", "token", "name", "bio", "image"]) });
 }
 
 async function login(req, res) {
+
 	const payload = req.body.user;
 
 	const user = await User.getByEmail(payload.email);
