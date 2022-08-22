@@ -12,7 +12,6 @@ async function getMe(req, res) {
 }
 
 async function login(req, res) {
-
 	const payload = req.body.user;
 
 	const user = await User.getByEmail(payload.email);

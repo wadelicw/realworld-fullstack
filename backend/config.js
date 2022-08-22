@@ -1,17 +1,17 @@
 "use strict";
 
+require("dotenv").config();
 const AWS = require("aws-sdk");
 const mem = require("mem");
 const logger = require("./utils/logger");
 
-if (process.env.NODE_ENV != "production") {
-	require("dotenv").config();
+if (process.env.NODE_ENV === "development") {
 	const credentials = new AWS.SharedIniFileCredentials({ profile: "wade" });
 	AWS.config.credentials = credentials;
 }
 
 const ssm = new AWS.SSM({
-	region: "ap-east-1",
+	region: "ap-east-1"
 });
 
 const MAPPER = {
@@ -23,9 +23,9 @@ const MAPPER = {
 };
 
 async function synchronize() {
-
 	let response;
 	let items = [];
+
 	do {
 		response = await ssm
 			.getParametersByPath({
@@ -47,7 +47,6 @@ async function synchronize() {
 	logger.debug("[System] Completed on setup environment ");
 
 	return env;
-
 }
 
 module.exports = mem(synchronize);

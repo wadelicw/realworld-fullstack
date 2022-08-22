@@ -51,6 +51,7 @@
 				"ignoreComments": true,
 				"ignoreTemplateLiterals": true
 			}
-		]
+		],
+		"no-await-in-loop": "off"
 	}
 }

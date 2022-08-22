@@ -17,5 +17,4 @@ initialize()
 				}
 				return logger[IS_PRODUCTION ? "info" : "debug"](`The server listens at port ${PORT}`, { label: "App" });
 			}
-		)
-	);
+		));

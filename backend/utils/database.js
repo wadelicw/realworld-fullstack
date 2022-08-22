@@ -18,7 +18,7 @@ const database = knex({
 			port: config.DB_PORT,
 			user: config.DB_USERNAME,
 			password: config.DB_PASSWORD
-		}
+		};
 	}
 });
 
