@@ -38,6 +38,7 @@ class Main extends React.Component {
 			}
 		} else {
 			localStorage.removeItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
+
 			if (pathname !== "/" && pathname !== "/profile/[name]") {
 				Router.replace("/");
 			}
@@ -79,7 +80,7 @@ class Main extends React.Component {
 							</Link>
 						</li>
 						<li className="nav-item">
-							<Link href="">
+							<Link href="/settings">
 								<a className="nav-link">
 									<i className="ion-gear-a"></i>&nbsp;Settings
 								</a>

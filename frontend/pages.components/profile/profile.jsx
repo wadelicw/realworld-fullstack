@@ -1,13 +1,12 @@
 import React from "react";
 import autobind from "autobind-decorator";
 import classnames from "classnames";
-import Router, { withRouter } from "next/router";
+import Router from "next/router";
 import { NextSeo } from "next-seo";
 import { connect } from "react-redux";
 
 import api from "../../api";
 
-@withRouter
 @connect(
 	state => ({
 		user: state.user
@@ -27,7 +26,7 @@ class Profile extends React.Component {
 
 	@autobind
 	async getProfile() {
-		const name = this.props.router?.query?.name;
+		const name = this.props.profileName;
 		const accessToken = localStorage.getItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
 
 		try {
@@ -41,7 +40,7 @@ class Profile extends React.Component {
 
 	@autobind
 	async follow() {
-		const name = this.props.router?.query?.name;
+		const name = this.props.profileName;
 
 		try {
 			const { profile } = await api.profile.follow(name);
@@ -54,7 +53,7 @@ class Profile extends React.Component {
 
 	@autobind
 	async unFollow() {
-		const name = this.props.router?.query?.name;
+		const name = this.props.profileName;
 
 		try {
 			const { profile } = await api.profile.unFollow(name);
@@ -67,7 +66,7 @@ class Profile extends React.Component {
 
 	render() {
 		const { bio, following, image, name } = this.state.data;
-		const profileName = this.props.router?.query?.name;
+		const profileName = this.props.profileName;
 
 		return (
 			<>
@@ -189,5 +188,11 @@ class Profile extends React.Component {
 	}
 
 }
+
+Profile.getInitialProps = async function (context) {
+	const query = context.query || {};
+	const profileName = query.name;
+	return { profileName };
+};
 
 export default Profile;
