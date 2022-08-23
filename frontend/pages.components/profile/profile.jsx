@@ -1,11 +1,11 @@
 import React from "react";
 import autobind from "autobind-decorator";
+import classnames from "classnames";
 import { NextSeo } from "next-seo";
 import { connect } from "react-redux";
 import { withRouter } from "next/router";
 
 import api from "../../api";
-import { setUser } from "../../features/user/userSlice";
 
 @withRouter
 @connect(
@@ -39,10 +39,35 @@ class Profile extends React.Component {
 		}
 	}
 
+	@autobind
+	async follow() {
+		const name = this.props.router?.query?.name;
+
+		try {
+			const { profile } = await api.profile.follow(name);
+			this.setState({ data: profile })
+		} catch (error) {
+			console.error(error);
+			return window.alert(error?.message);
+		}
+	}
+
+	@autobind
+	async unFollow() {
+		const name = this.props.router?.query?.name;
+
+		try {
+			const { profile } = await api.profile.unFollow(name);
+			this.setState({ data: profile })
+		} catch (error) {
+			console.error(error);
+			return window.alert(error?.message);
+		}
+	}
+
 	render() {
 		const { bio, following, image, name } = this.state.data;
 		const profileName = this.props.router?.query?.name;
-		console.log(profileName, this.props.user?.user);
 
 		return (
 			<>
@@ -65,12 +90,19 @@ class Profile extends React.Component {
 												Edit Profile Settings
 											</button>
 										) : (
-												<button className="btn btn-sm btn-outline-secondary action-btn">
-													{
-														!following && (
-															<i className="ion-plus-round" />
-														)
-													}
+												<button
+													className="btn btn-sm btn-outline-secondary action-btn"
+													onClick={() => {
+														if (following) {
+															this.unFollow();
+														} else {
+															this.follow();
+														}
+													}}
+												>
+													<i className={classnames(
+														following ? "ion-minus-round" : "ion-plus-round"
+													)} />
 													&nbsp;
 													{following ? "Unfollow" : "Follow"} {name}
 												</button>

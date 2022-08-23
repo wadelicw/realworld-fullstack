@@ -15,4 +15,9 @@ router.get(
 	controller.getProfile
 );
 
+router
+	.route("/:name/follow")
+	.post(auth, controller.follow)
+	.delete(auth, controller.unFollow);
+
 module.exports = router;

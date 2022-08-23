@@ -69,6 +69,9 @@ class Main extends React.Component {
 	renderNavbar() {
 		const path = this.props.router.pathname;
 		const { brand } = this.state;
+		const user = this.props.user;
+		const userName = user.user;
+		const query = this.props.router.query
 
 		return (
 			<nav className="navbar navbar-light">
@@ -103,30 +106,49 @@ class Main extends React.Component {
 								</a>
 							</Link>
 						</li>
-						<li className="nav-item">
-							<Link href="/login">
-								<a
-									className={classnames(
-										"nav-link",
-										path === "/login" ? "active" : undefined
-									)}
-								>
-									Sign in
-								</a>
-							</Link>
-						</li>
-						<li className="nav-item">
-							<Link href="/register">
-								<a
-									className={classnames(
-										"nav-link",
-										path === "/register" ? "active" : undefined
-									)}
-								>
-									Sign up
-								</a>
-							</Link>
-						</li>
+						{
+							user.accessToken?.length > 0 ? (
+								<li className="nav-item">
+									<Link href={`/profile/${userName}`}>
+										<a
+											className={classnames(
+												"nav-link",
+												query.name === userName ? "active" : undefined
+											)}
+										>
+											{userName}
+										</a>
+									</Link>
+								</li>
+							) : (
+									<>
+										<li className="nav-item">
+											<Link href="/login">
+												<a
+													className={classnames(
+														"nav-link",
+														path === "/login" ? "active" : undefined
+													)}
+												>
+													Sign in
+												</a>
+											</Link>
+										</li>
+										<li className="nav-item">
+											<Link href="/register">
+												<a
+													className={classnames(
+														"nav-link",
+														path === "/register" ? "active" : undefined
+													)}
+												>
+													Sign up
+												</a>
+											</Link>
+										</li>
+									</>
+								)
+						}
 					</ul>
 				</div>
 			</nav>

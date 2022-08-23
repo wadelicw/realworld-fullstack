@@ -23,7 +23,7 @@ module.exports = {
 			.get()
 			.get(
 				"/api/user",
-				{ headers: { Authorization: `bearer ${accessToken}` } }
+				{ headers: { Authorization: `Bearer ${accessToken}` } }
 			)
 			.then((response) => response.data);
 	}

@@ -4,7 +4,8 @@ const axios = require("axios");
 const store = require("../store");
 
 function get() {
-	const accessToken = store.getStore().getState().user;
+	const accessToken = store.getStore().getState()?.user?.accessToken;
+
 	const headers = {};
 
 	if (accessToken) {
