@@ -45,9 +45,6 @@ services:
       core: 1024
     depends_on:
       - realworld-backend
-    environment:
-      - TZ=UTC
-      - NODE_ENV=production
 
 networks:
   default:
