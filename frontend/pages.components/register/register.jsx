@@ -38,8 +38,6 @@ class Register extends React.Component {
 			return window.alert("email, password and name can't be empty");
 		}
 
-		this.setState({ loading: true });
-
 		try {
 			const { user } = await api.user.register({ email, password, name });
 			this.props.setUser({ user: user.name, accessToken: user.token });
@@ -47,8 +45,7 @@ class Register extends React.Component {
 			// return Router.replace("/");
 		} catch (error) {
 			console.error(error);
-			window.alert(error?.message);
-			return this.setState({ loading: false });
+			return window.alert(error?.message);
 		}
 	}
 

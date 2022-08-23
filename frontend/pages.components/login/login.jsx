@@ -38,17 +38,14 @@ class Login extends React.Component {
 			return window.alert("email and password can't be empty");
 		}
 
-		this.setState({ loading: true });
-
 		try {
-			const { user } = await api.user.login({ email, password });;
+			const { user } = await api.user.login({ email, password });
 			this.props.setUser({ user: user.name, accessToken: user.token });
 			localStorage.setItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY, user.token);
 			// return Router.replace("/");
 		} catch (error) {
 			console.error(error);
-			window.alert(error?.message);
-			return this.setState({ loading: false });
+			return window.alert(error?.message);
 		}
 	}
 

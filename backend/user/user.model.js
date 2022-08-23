@@ -40,6 +40,10 @@ User.getByEmail = function (email) {
 	return this.findOne("Email", email);
 };
 
+User.getByUsername = async function (name) {
+	return this.findOne("Name", name);
+};
+
 User.register = async function (email, name, password) {
 	// Create a random salt for hashing the password
 	const salt = crypto.randomBytes(16).toString("hex");
@@ -110,6 +114,30 @@ User.prototype.update = async function (payload) {
 		.where("UserId", this.id);
 
 	return User.getById(this.id);
+};
+
+User.prototype.isFollowing = function (userId) {
+	return knex
+		.table("UserFollow")
+		.first("NowFollowingUser", "UserId")
+		.where("NowFollowingUser", userId)
+		.andWhere("UserId", this.id)
+		.then((response) => !_.isNil(response));
+};
+
+User.prototype.follow = function (userId) {
+	return knex
+		.table("UserFollow")
+		.insert({ NowFollowingUser: userId, UserId: this.id })
+		.onConflict()
+		.ignore();
+};
+
+User.prototype.unFollow = function (userId) {
+	return knex
+		.table("UserFollow")
+		.where({ NowFollowingUser: userId, UserId: this.id })
+		.delete();
 };
 
 module.exports = User;

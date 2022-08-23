@@ -1,16 +1,68 @@
 import React from "react";
 import Link from "next/link";
+import Router from "next/router";
 import autobind from "autobind-decorator";
 import classnames from "classnames";
+import { connect } from "react-redux";
 import { withRouter } from "next/router";
 
+import api from "../api";
+import { setUser } from "../features/user/userSlice";
+
 @withRouter
+@connect(
+	state => ({
+		user: state.user
+	}),
+	{ setUser }
+)
 class Main extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			brand: "conduit"
 		};
+	}
+
+	async componentDidMount() {
+
+		const pathname = this.props.router.pathname;
+
+		/**
+		 *
+		 * Check if access token is stored in local storage
+		 * If Exist, try to login
+		 *
+		 */
+		let accessToken = localStorage.getItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
+
+		if (accessToken) {
+			try {
+				const { user } = await api.user.me(accessToken);
+				this.props.setUser({ user: user.name, accessToken: user.token });
+				localStorage.setItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY, user.token);
+				return console.log("Validated User: ", user.name);
+			} catch (error) {
+				console.error(error);
+				/**
+				 *
+				 * Remove the local storage access token
+				 *
+				 */
+				localStorage.removeItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
+			}
+		}
+
+		/**
+		 *
+		 * All else failed
+		 *
+		 */
+		localStorage.removeItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
+
+		if (pathname != "/")
+			await Router.replace("/");
+
 	}
 
 	@autobind

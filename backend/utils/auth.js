@@ -2,6 +2,7 @@
 
 const jsonwebtoken = require("jsonwebtoken");
 const User = require("../user/user.model");
+const getConfig = require("../config");
 
 async function auth(req, res, next) {
 	const { authorization } = req.headers;
@@ -31,7 +32,8 @@ async function auth(req, res, next) {
 	let decoded;
 
 	try {
-		decoded = jsonwebtoken.verify(token, process.env.AUTH_SIGNATURE);
+		const config = await getConfig();
+		decoded = jsonwebtoken.verify(token, config.AUTH_SIGNATURE);
 	} catch (error) {
 		return res
 			.status(403)

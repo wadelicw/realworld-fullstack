@@ -16,6 +16,16 @@ module.exports = {
 			.get()
 			.post("/api/users", { user })
 			.then((response) => response.data);
+	},
+
+	me(accessToken) {
+		return agent
+			.get()
+			.get(
+				"/api/user",
+				{ headers: { Authorization: `bearer ${accessToken}` } }
+			)
+			.then((response) => response.data);
 	}
 
 };
