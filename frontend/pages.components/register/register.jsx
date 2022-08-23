@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-// import Router from "next/router";
+import Router from "next/router";
 import autobind from "autobind-decorator";
 import Immutable from "immutable";
 import { NextSeo } from "next-seo";
@@ -42,7 +42,7 @@ class Register extends React.Component {
 			const { user } = await api.user.register({ email, password, name });
 			this.props.setUser({ user: user.name, accessToken: user.token });
 			localStorage.setItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY, user.token);
-			// return Router.replace("/");
+			return Router.replace("/profile/" + user.name);
 		} catch (error) {
 			console.error(error);
 			return window.alert(error?.message);

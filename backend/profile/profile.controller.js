@@ -17,7 +17,7 @@ async function getProfile(req, res) {
 			});
 	}
 
-	const isFollowing = user.id ? await profile.isFollowing(user.id) : false;
+	const isFollowing = user?.id ? await profile.isFollowing(user.id) : false;
 
 	return res.send({
 		profile: {

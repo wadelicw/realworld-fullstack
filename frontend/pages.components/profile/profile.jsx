@@ -1,9 +1,9 @@
 import React from "react";
 import autobind from "autobind-decorator";
 import classnames from "classnames";
+import Router, { withRouter } from "next/router";
 import { NextSeo } from "next-seo";
 import { connect } from "react-redux";
-import { withRouter } from "next/router";
 
 import api from "../../api";
 
@@ -72,6 +72,7 @@ class Profile extends React.Component {
 		return (
 			<>
 				<NextSeo title="Profile" />
+
 				<div className="profile-page">
 
 					<div className="user-info">
@@ -84,7 +85,10 @@ class Profile extends React.Component {
 									<p>{bio}</p>
 									{
 										profileName === this.props.user?.user ? (
-											<button className="btn btn-sm btn-outline-secondary action-btn">
+											<button
+												className="btn btn-sm btn-outline-secondary action-btn"
+												onClick={() => Router.replace("/settings")}
+											>
 												<i className="ion-gear-a"></i>
 												&nbsp;
 												Edit Profile Settings
@@ -93,6 +97,10 @@ class Profile extends React.Component {
 												<button
 													className="btn btn-sm btn-outline-secondary action-btn"
 													onClick={() => {
+														if (!this.props.user.accessToken) {
+															return Router.replace("/login");
+														}
+
 														if (following) {
 															this.unFollow();
 														} else {

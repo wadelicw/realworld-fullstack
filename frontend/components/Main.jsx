@@ -25,6 +25,7 @@ class Main extends React.Component {
 
 	async componentDidMount() {
 		const { pathname } = this.props.router;
+
 		const accessToken = localStorage.getItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
 
 		if (accessToken) {
@@ -37,7 +38,7 @@ class Main extends React.Component {
 			}
 		} else {
 			localStorage.removeItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
-			if (pathname !== "/") {
+			if (pathname !== "/" && pathname !== "/profile/[name]") {
 				Router.replace("/");
 			}
 		}
