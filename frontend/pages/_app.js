@@ -2,6 +2,7 @@ import Head from "next/head";
 import NextApp from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { DefaultSeo } from "next-seo";
+import { withRouter } from "next/router";
 
 import Main from "../components/Main";
 import webConfig from "../web.config";
@@ -9,6 +10,7 @@ import { wrapper } from "../store";
 
 import "../styles/main.scss";
 
+@withRouter
 class App extends NextApp {
 	render() {
 		const { Component, pageProps } = this.props;
@@ -31,7 +33,7 @@ class App extends NextApp {
 					}]}
 				/>
 				<Main>
-					<Component {...pageProps} />
+					<Component {...pageProps} key={this.props.router.asPath} />
 				</Main>
 			</>
 		);
