@@ -11,7 +11,7 @@ const router = PromiseRouter();
 
 router.get(
 	"/:name",
-	function (req, res, next) {
+	(req, res, next) => {
 		if (req.headers.authorization?.split(" ")?.[1]?.length > 10) {
 			auth(req, res, next);
 		} else {

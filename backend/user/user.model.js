@@ -123,7 +123,6 @@ User.prototype.isFollowing = function (userId) {
 		.where("NowFollowingUser", this.id)
 		.andWhere("UserId", userId)
 		.then((response) => !_.isNil(response));
-
 };
 
 User.prototype.follow = function (userId) {
