@@ -11,7 +11,7 @@ function get() {
 	if (accessToken) {
 		headers.Authorization = `Bearer ${accessToken}`;
 	}
-	console.log(process.env.NEXT_PUBLIC_DOMAIN);
+
 	const agent = axios.create({
 		baseURL: process.env.NEXT_PUBLIC_DOMAIN,
 		headers
