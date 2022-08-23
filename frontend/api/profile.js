@@ -4,10 +4,13 @@ const agent = require("./agent");
 
 module.exports = {
 
-	getProfile(name) {
+	getProfile(name, accessToken) {
 		return agent
 			.get()
-			.get(`/api/profile/${name}`)
+			.get(
+				`/api/profile/${name}`,
+				{ headers: { Authorization: `Bearer ${accessToken}` } }
+			)
 			.then((response) => response.data);
 	},
 

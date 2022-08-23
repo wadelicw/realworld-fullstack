@@ -11,6 +11,13 @@ const router = PromiseRouter();
 
 router.get(
 	"/:name",
+	function (req, res, next) {
+		if (req.headers.authorization) {
+			auth(req, res, next);
+		} else {
+			next();
+		}
+	},
 	validate(schema.getProfile),
 	controller.getProfile
 );

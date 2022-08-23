@@ -120,9 +120,10 @@ User.prototype.isFollowing = function (userId) {
 	return knex
 		.table("UserFollow")
 		.first("NowFollowingUser", "UserId")
-		.where("NowFollowingUser", userId)
-		.andWhere("UserId", this.id)
+		.where("NowFollowingUser", this.id)
+		.andWhere("UserId", userId)
 		.then((response) => !_.isNil(response));
+
 };
 
 User.prototype.follow = function (userId) {

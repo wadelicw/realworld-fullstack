@@ -14,7 +14,6 @@ import api from "../../api";
 	})
 )
 class Profile extends React.Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -29,9 +28,10 @@ class Profile extends React.Component {
 	@autobind
 	async getProfile() {
 		const name = this.props.router?.query?.name;
+		const accessToken = localStorage.getItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
 
 		try {
-			const { profile } = await api.profile.getProfile(name);
+			const { profile } = await api.profile.getProfile(name, accessToken);
 			this.setState({ data: profile })
 		} catch (error) {
 			console.error(error);
