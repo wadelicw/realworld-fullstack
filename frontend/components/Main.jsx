@@ -1,17 +1,16 @@
 import React from "react";
 import Link from "next/link";
-import Router from "next/router";
 import autobind from "autobind-decorator";
 import classnames from "classnames";
+import Router, { withRouter } from "next/router";
 import { connect } from "react-redux";
-import { withRouter } from "next/router";
 
 import api from "../api";
 import { setUser } from "../features/user/userSlice";
 
 @withRouter
 @connect(
-	state => ({
+	(state) => ({
 		user: state.user
 	}),
 	{ setUser }
@@ -25,53 +24,32 @@ class Main extends React.Component {
 	}
 
 	async componentDidMount() {
-
-		const pathname = this.props.router.pathname;
-
-		/**
-		 *
-		 * Check if access token is stored in local storage
-		 * If Exist, try to login
-		 *
-		 */
-		let accessToken = localStorage.getItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
+		const { pathname } = this.props.router;
+		const accessToken = localStorage.getItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
 
 		if (accessToken) {
 			try {
 				const { user } = await api.user.me(accessToken);
 				this.props.setUser({ user: user.name, accessToken: user.token });
 				localStorage.setItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY, user.token);
-				return console.log("Validated User: ", user.name);
 			} catch (error) {
-				console.error(error);
-				/**
-				 *
-				 * Remove the local storage access token
-				 *
-				 */
 				localStorage.removeItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
 			}
+		} else {
+			localStorage.removeItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
+			if (pathname !== "/") {
+				Router.replace("/");
+			}
 		}
-
-		/**
-		 *
-		 * All else failed
-		 *
-		 */
-		localStorage.removeItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
-
-		if (pathname != "/")
-			await Router.replace("/");
-
 	}
 
 	@autobind
 	renderNavbar() {
 		const path = this.props.router.pathname;
+		const { query } = this.props.router;
 		const { brand } = this.state;
-		const user = this.props.user;
+		const { user } = this.props;
 		const userName = user.user;
-		const query = this.props.router.query
 
 		return (
 			<nav className="navbar navbar-light">
@@ -107,20 +85,22 @@ class Main extends React.Component {
 							</Link>
 						</li>
 						{
-							user.accessToken?.length > 0 ? (
-								<li className="nav-item">
-									<Link href={`/profile/${userName}`}>
-										<a
-											className={classnames(
-												"nav-link",
-												query.name === userName ? "active" : undefined
-											)}
-										>
-											{userName}
-										</a>
-									</Link>
-								</li>
-							) : (
+							user.accessToken?.length > 0
+								? (
+									<li className="nav-item">
+										<Link href={`/profile/${userName}`}>
+											<a
+												className={classnames(
+													"nav-link",
+													query.name === userName ? "active" : undefined
+												)}
+											>
+												{userName}
+											</a>
+										</Link>
+									</li>
+								)
+								: (
 									<>
 										<li className="nav-item">
 											<Link href="/login">
