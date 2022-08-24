@@ -39,7 +39,7 @@ class Main extends React.Component {
 		} else {
 			localStorage.removeItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
 
-			if (pathname !== "/" && pathname !== "/profile/[name]") {
+			if (pathname !== "/" && !["/profile/[name]", "/article/[slug]"].includes(pathname)) {
 				Router.replace("/");
 			}
 		}

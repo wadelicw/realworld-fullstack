@@ -189,7 +189,7 @@ class Profile extends React.Component {
 
 }
 
-Profile.getInitialProps = async function (context) {
+Profile.getInitialProps = function (context) {
 	const query = context.query || {};
 	const profileName = query.name;
 	return { profileName };

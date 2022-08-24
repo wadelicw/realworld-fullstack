@@ -32,6 +32,30 @@ async function create(req, res) {
 	}
 }
 
+function get(req, res) {
+	return res.json({ article: req.article });
+}
+
+async function getArticle(req, res, next, slug) {
+	const { user } = req;
+	const article = await Article.getBySlug(slug, user?.id);
+
+	if (!article) {
+		return res
+			.status(404)
+			.json({
+				errors: {
+					message: `Article with slug ${slug} not found`
+				}
+			});
+	}
+
+	req.article = article;
+	return next();
+}
+
 module.exports = {
-	create
+	create,
+	get,
+	getArticle
 };

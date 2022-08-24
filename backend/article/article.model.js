@@ -13,7 +13,8 @@ function Article(body) {
 	_.assign(this, body);
 }
 
-Article.findOne = async function (key, value, userId) {
+// Assign the dumpy value to userId if it isn't provided.
+Article.findOne = async function (key, value, userId = "<NONE>") {
 	const doc = await knex
 		.select({
 			// ID

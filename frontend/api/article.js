@@ -9,6 +9,13 @@ module.exports = {
 			.get()
 			.post("/api/article", { article })
 			.then((response) => response.data);
+	},
+
+	get(slug) {
+		return agent
+			.get()
+			.get(`/api/article/${slug}`)
+			.then((response) => response.data);
 	}
 
 };
