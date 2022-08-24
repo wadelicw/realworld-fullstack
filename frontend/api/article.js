@@ -9,6 +9,6 @@ module.exports = {
 			.get()
 			.post("/api/article", { article })
 			.then((response) => response.data);
-	},
+	}
 
 };

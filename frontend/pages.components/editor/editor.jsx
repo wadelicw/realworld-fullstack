@@ -25,9 +25,7 @@ class Editor extends React.Component {
 	async create() {
 		try {
 			const { article } = await api.article.create(this.state.payload);
-			console.log(article);
-			window.alert("Success to create article!");
-			this.setState({ loading: false });
+			return Router.replace(`/article/${article.slug}`);
 		} catch (error) {
 			console.error(error);
 			return window.alert(error?.message);
@@ -159,8 +157,6 @@ class Editor extends React.Component {
 						</div>
 					</div>
 				</div>
-
-
 			</>
 		);
 	}

@@ -1,6 +1,6 @@
 "use strict";
 
-const Joi = require("joi");
+const { Joi } = require("express-validation");
 
 const article = Joi.object({
 	title: Joi

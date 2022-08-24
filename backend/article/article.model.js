@@ -73,7 +73,6 @@ Article.getById = function (articleId, userId) {
 	return this.findOne("article.ArticleId", articleId, userId);
 };
 
-
 Article.getBySlug = function (slug, userId) {
 	return this.findOne("article.Slug", slug, userId);
 };

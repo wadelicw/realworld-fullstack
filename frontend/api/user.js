@@ -33,6 +33,6 @@ module.exports = {
 			.get()
 			.put("/api/user", { user })
 			.then((response) => response.data);
-	},
+	}
 
 };
