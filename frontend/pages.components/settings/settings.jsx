@@ -44,8 +44,25 @@ class Settings extends React.Component {
 
 		try {
 			const { user } = await api.user.me(accessToken);
-			delete user.token;
-			this.setState({ loading: false, payload: { ...user, password: "" } })
+			this.setState({ loading: false, payload: { ...user, password: "" } });
+		} catch (error) {
+			console.error(error);
+			return window.alert(error?.message);
+		}
+	}
+
+	@autobind
+	async update() {
+		const payload = Immutable.Map(this.state.payload).toJS();
+
+		if (payload.password.length < 1) {
+			delete payload.password;
+		}
+
+		try {
+			const { user } = await api.user.update(payload);
+			window.alert("Success to update settings!");
+			this.setState({ loading: false, payload: { ...user, password: "" } });
 		} catch (error) {
 			console.error(error);
 			return window.alert(error?.message);
@@ -158,7 +175,10 @@ class Settings extends React.Component {
 														}
 													/>
 												</fieldset>
-												<button className="btn btn-lg btn-primary pull-xs-right">
+												<button
+													className="btn btn-lg btn-primary pull-xs-right"
+													onClick={() => this.update()}
+												>
 													Update Settings
 												</button>
 											</fieldset>

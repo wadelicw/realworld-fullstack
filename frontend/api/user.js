@@ -26,6 +26,13 @@ module.exports = {
 				{ headers: { Authorization: `Bearer ${accessToken}` } }
 			)
 			.then((response) => response.data);
-	}
+	},
+
+	update(user) {
+		return agent
+			.get()
+			.put("/api/user", { user })
+			.then((response) => response.data);
+	},
 
 };
