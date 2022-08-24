@@ -72,35 +72,37 @@ class Main extends React.Component {
 								</a>
 							</Link>
 						</li>
-						<li className="nav-item">
-							<Link href="">
-								<a className="nav-link" >
-									<i className="ion-compose"></i>&nbsp;New Article
-								</a>
-							</Link>
-						</li>
-						<li className="nav-item">
-							<Link href="/settings">
-								<a className="nav-link">
-									<i className="ion-gear-a"></i>&nbsp;Settings
-								</a>
-							</Link>
-						</li>
 						{
 							user.accessToken?.length > 0
 								? (
-									<li className="nav-item">
-										<Link href={`/profile/${userName}`}>
-											<a
-												className={classnames(
-													"nav-link",
-													query.name === userName ? "active" : undefined
-												)}
-											>
-												{userName}
-											</a>
-										</Link>
-									</li>
+									<>
+										<li className="nav-item">
+											<Link href="/editor">
+												<a className="nav-link" >
+													<i className="ion-compose"></i>&nbsp;New Article
+												</a>
+											</Link>
+										</li>
+										<li className="nav-item">
+											<Link href="/settings">
+												<a className="nav-link">
+													<i className="ion-gear-a"></i>&nbsp;Settings
+												</a>
+											</Link>
+										</li>
+										<li className="nav-item">
+											<Link href={`/profile/${userName}`}>
+												<a
+													className={classnames(
+														"nav-link",
+														query.name === userName ? "active" : undefined
+													)}
+												>
+													{userName}
+												</a>
+											</Link>
+										</li>
+									</>
 								)
 								: (
 									<>

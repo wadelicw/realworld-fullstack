@@ -12,6 +12,7 @@ router.get(
 
 router.use("/", require("./user/user.route"));
 router.use("/profile", require("./profile/profile.route"));
+router.use("/article", require("./article/article.route"));
 
 router.use((error, req, res, next) => {
 	// customize Joi validation errors
