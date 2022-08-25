@@ -18,6 +18,7 @@ class Article extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			loading: true,
 			data: {}
 		};
 	}
@@ -32,15 +33,150 @@ class Article extends React.Component {
 			const slug = this.props.slug;
 			const { article } = await api.article.get(slug);
 			console.log(article)
-			this.setState({ data: article })
+			this.setState({ data: article, loading: false })
 		} catch (error) {
 			console.error(error);
 			return window.alert(error?.message);
 		}
 	}
 
+	@autobind
+	async follow(name) {
+		this.setState({ loading: true });
+		try {
+			await api.profile.follow(name);
+			return this.getArticle();
+		} catch (error) {
+			console.error(error);
+			return window.alert(error?.message);
+		}
+	}
+
+	@autobind
+	async unFollow(name) {
+		this.setState({ loading: true });
+		try {
+			await api.profile.unFollow(name);
+			return this.getArticle();
+		} catch (error) {
+			console.error(error);
+			return window.alert(error?.message);
+		}
+	}
+
+	@autobind
+	async favorite(slug) {
+		this.setState({ loading: true });
+		try {
+			await api.article.favorite(slug);
+			return this.getArticle();
+		} catch (error) {
+			console.error(error);
+			return window.alert(error?.message);
+		}
+	}
+
+	@autobind
+	async unFavorite(slug) {
+		this.setState({ loading: true });
+		try {
+			await api.article.unFavorite(slug);
+			return this.getArticle();
+		} catch (error) {
+			console.error(error);
+			return window.alert(error?.message);
+		}
+	}
+
+	@autobind
+	renderAuthorDetail() {
+		const {
+			author, updatedAt, favorited, favoritesCount
+		} = this.state.data;
+		const { slug, user } = this.props;
+
+		return (
+			<div className="article-meta">
+				<Link href={`/profile/${author?.name}`}>
+					<a><img src={author?.image} /></a>
+				</Link>
+				<div className="info">
+					<Link href={`/profile/${author?.name}`}>
+						<a className="author">{author?.name}</a>
+					</Link>
+					<span className="date">{moment(updatedAt).format("MMMM Do")}</span>
+				</div>
+				{
+					user.user !== author?.name
+						? (
+							<>
+								<button
+									className="btn btn-sm btn-outline-secondary"
+									onClick={() => {
+										if (!user.accessToken) {
+											return Router.replace("/login");
+										}
+
+										if (author?.following) {
+											this.unFollow(author?.name);
+										} else {
+											this.follow(author?.name);
+										}
+									}}
+								>
+									<i className={classnames(
+										author?.following ? "ion-minus-round" : "ion-plus-round"
+									)} />
+									&nbsp;
+									{author?.following ? "Unfollow" : "Follow"} {author?.name} <span className="counter">({author?.followingCount})</span>
+								</button>
+								&nbsp;&nbsp;
+								<button
+									className="btn btn-sm btn-outline-primary"
+									onClick={() => {
+										if (!user.accessToken) {
+											return Router.replace("/login");
+										}
+
+										if (author?.following) {
+											this.unFavorite(slug);
+										} else {
+											this.favorite(slug);
+										}
+									}}
+								>
+									<i className="ion-heart"></i>
+									&nbsp;
+									{favorited ? "Unfavorite" : "Favorite"} Post <span className="counter">({favoritesCount})</span>
+								</button>
+							</>
+						)
+						: (
+							<>
+								<button className="btn btn-sm btn-outline-secondary">
+									<i className="ion-plus-round"></i>
+									&nbsp;
+									Follow {author?.name} <span className="counter">({author?.followingCount})</span>
+								</button>
+								&nbsp;&nbsp;
+								<button className="btn btn-sm btn-outline-primary">
+									<i className="ion-heart"></i>
+									&nbsp;
+									Favorite Post <span className="counter">({favoritesCount})</span>
+								</button>
+							</>
+
+						)
+				}
+			</div>
+		);
+	}
+
 	render() {
-		const { author, title, body, updatedAt } = this.state.data;
+		const {
+			author, title, body, updatedAt, tagList,
+			favorited, favoritesCount
+		} = this.state.data;
 		const { slug, user } = this.props;
 		console.log(slug, user);
 		return (
@@ -53,29 +189,7 @@ class Article extends React.Component {
 						<div className="container">
 
 							<h1>{title}</h1>
-
-							<div className="article-meta">
-								<Link href={`/profile/${author?.name}`}>
-									<a><img src={author?.image} /></a>
-								</Link>
-								<div className="info">
-									<Link href={`/profile/${author?.name}`}>
-										<a className="author">{author?.name}</a>
-									</Link>
-									<span className="date">{moment(updatedAt).format("MMMM Do")}</span>
-								</div>
-								<button className="btn btn-sm btn-outline-secondary">
-									<i className="ion-plus-round"></i>
-									&nbsp;
-									Follow Eric Simons <span className="counter">(10)</span>
-								</button>
-								&nbsp;&nbsp;
-								<button className="btn btn-sm btn-outline-primary">
-									<i className="ion-heart"></i>
-									&nbsp;
-									Favorite Post <span className="counter">(29)</span>
-								</button>
-							</div>
+							<this.renderAuthorDetail user={user} />
 
 						</div>
 					</div>
@@ -85,34 +199,27 @@ class Article extends React.Component {
 						<div className="row article-content">
 							<div className="col-md-12">
 								<p>{body}</p>
+								<div className="tag-list">
+									<ul style={{ padding: 0 }}>
+										{
+											tagList?.map((row, index) => (
+												<li
+													key={index}
+													className="tag-default tag-pill tag-outline ng-binding ng-scope"
+												>
+													{row}
+												</li>
+											))
+										}
+									</ul>
+								</div>
 							</div>
 						</div>
 
 						<hr />
 
 						<div className="article-actions">
-							<div className="article-meta">
-								<Link href={`/profile/${author?.name}`}>
-									<a><img src={author?.image} /></a>
-								</Link>
-								<div className="info">
-									<Link href={`/profile/${author?.name}`}>
-										<a className="author">{author?.name}</a>
-									</Link>
-									<span className="date">{moment(updatedAt).format("MMMM Do")}</span>
-								</div>
-								<button className="btn btn-sm btn-outline-secondary">
-									<i className="ion-plus-round"></i>
-									&nbsp;
-									Follow Eric Simons <span className="counter">(10)</span>
-								</button>
-								&nbsp;&nbsp;
-								<button className="btn btn-sm btn-outline-primary">
-									<i className="ion-heart"></i>
-									&nbsp;
-									Favorite Post <span className="counter">(29)</span>
-								</button>
-							</div>
+							<this.renderAuthorDetail />
 						</div>
 
 						<div className="row">

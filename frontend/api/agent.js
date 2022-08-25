@@ -5,7 +5,7 @@ const store = require("../store");
 
 function get() {
 	const accessToken = store.getStore().getState()?.user?.accessToken;
-
+	console.log("token", accessToken)
 	const headers = {};
 
 	if (accessToken) {

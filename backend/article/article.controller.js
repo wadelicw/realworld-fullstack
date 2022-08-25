@@ -44,9 +44,7 @@ async function getArticle(req, res, next, slug) {
 		return res
 			.status(404)
 			.json({
-				errors: {
-					message: `Article with slug ${slug} not found`
-				}
+				message: `Article with slug ${slug} not found`
 			});
 	}
 
@@ -54,8 +52,45 @@ async function getArticle(req, res, next, slug) {
 	return next();
 }
 
+
+async function favorite(req, res) {
+	const { user } = req;
+	let { article } = req;
+
+	if (!user) {
+		return res
+			.status(403)
+			.json({
+				message: "Please login before favorite an article"
+			});
+	}
+
+	article = await article.favorite(user.id);
+
+	return res.json({ article });
+}
+
+async function unfavorite(req, res) {
+	const { user } = req;
+	let { article } = req;
+
+	if (!user) {
+		return res
+			.status(403)
+			.json({
+				message: "Please login before unfavorite an article"
+			});
+	}
+
+	article = await article.unfavorite(user.id);
+
+	return res.json({ article });
+}
+
 module.exports = {
 	create,
 	get,
-	getArticle
+	getArticle,
+	favorite,
+	unfavorite
 };

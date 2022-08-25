@@ -30,11 +30,21 @@ Article.findOne = async function (key, value, userId = "<NONE>") {
 			"author.bio": "author.Bio",
 			"author.image": "author.Image",
 			"author.following": knex.raw("IF(follow.UserId, 1, 0)"),
+			"author.followingCount": knex
+				.table({ follow: "UserFollow" })
+				.count()
+				.where("follow.NowFollowingUser", "article.ArticleId"),
 			// Tags
 			tagList: knex
 				.table({ tag: "ArticleTag" })
 				.select(knex.raw("GROUP_CONCAT(tag)"))
 				.where(knex.raw("tag.ArticleId = article.ArticleId")),
+			// Favorite
+			favorited: knex.raw("IF(favorited.UserId, 1, 0)"),
+			favoritesCount: knex
+				.table({ favorite: "ArticleFavorite" })
+				.count()
+				.where("favorite.ArticleId", "article.ArticleId"),
 			// Dates
 			createdAt: "article.EnterDate",
 			updatedAt: "article.LastUpdate"
@@ -46,6 +56,13 @@ Article.findOne = async function (key, value, userId = "<NONE>") {
 			{ author: "User" },
 			"article.UserId",
 			"author.UserId"
+		)
+		.leftJoin(
+			{ favorited: "ArticleFavorite" },
+			function () {
+				this.on("favorited.ArticleId", "article.ArticleId");
+				this.andOn("favorited.UserId", knex.raw("?", [userId]));
+			}
 		)
 		.leftJoin(
 			{ follow: "UserFollow" },
@@ -101,6 +118,31 @@ Article.create = async function (title, description, body, tagList, userId) {
 	}
 
 	return this.getById(articleId, userId);
+};
+
+Article.prototype.favorite = async function (userId) {
+	await knex
+		.table("ArticleFavorite")
+		.insert({
+			ArticleId: this.id,
+			UserId: userId
+		})
+		.onConflict()
+		.ignore();
+
+	return Article.getById(this.id, userId);
+};
+
+Article.prototype.unfavorite = async function (userId) {
+	await knex
+		.table("ArticleFavorite")
+		.where({
+			ArticleId: this.id,
+			UserId: userId
+		})
+		.delete();
+
+	return Article.getById(this.id, userId);
 };
 
 module.exports = Article;
