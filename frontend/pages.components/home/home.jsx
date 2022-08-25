@@ -1,9 +1,55 @@
 import React from "react";
-import { NextSeo } from "next-seo";;
+import Link from "next/link";
+import moment from "moment";
+import autobind from "autobind-decorator";
+import classnames from "classnames";
+import Router from "next/router";
+import { NextSeo } from "next-seo";
+import { connect } from "react-redux";
 
+import api from "../../api";
+
+@connect(
+	state => ({
+		user: state.user
+	})
+)
 class Home extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			loading: true,
+			data: {},
+			count: 0,
+			payload: {
+				tag: "",
+				followedBy: "",
+				limit: 10,
+				offset: 0
+			}
+		};
+	}
+
+	async componentDidMount() {
+		await this.listArticle();
+	}
+
+	async listArticle() {
+		try {
+			const payload = this.state.payload
+			const { articles, count } = await api.article.list(payload);
+			console.log(articles);
+			this.setState({ data: articles, count, loading: false })
+		} catch (error) {
+			console.error(error);
+			return window.alert(error?.message);
+		}
+	}
 
 	render() {
+		const { data, payload } = this.state;
+		const { user } = this.props;
+
 		return (
 			<>
 				<NextSeo title="Home" />
@@ -31,41 +77,31 @@ class Home extends React.Component {
 									</ul>
 								</div>
 
-								<div className="article-preview">
-									<div className="article-meta">
-										<a href="profile.html"><img src="http://i.imgur.com/Qr71crq.jpg" /></a>
-										<div className="info">
-											<a href="" className="author">Eric Simons</a>
-											<span className="date">January 20th</span>
+								{
+									data.length > 0 && data.map((row, index) => (
+										<div className="article-preview" key={index}>
+											<div className="article-meta">
+												<Link href={`/profile/${row?.author?.name}`}>
+													<a><img src={row?.author?.image} /></a>
+												</Link>
+												<div className="info">
+													<Link href={`/profile/${row?.author?.name}`}>
+														<a className="author">{row?.author?.name}</a>
+													</Link>
+													<span className="date">{moment(row?.updatedAt).format("MMMM Do")}</span>
+												</div>
+												<button className="btn btn-outline-primary btn-sm pull-xs-right">
+													<i className="ion-heart" /> {row?.favoritesCount}
+												</button>
+											</div>
+											<a href="" className="preview-link">
+												<h1>{row?.title}</h1>
+												<p>{row?.description}</p>
+												<a>Read more...</a>
+											</a>
 										</div>
-										<button className="btn btn-outline-primary btn-sm pull-xs-right">
-											<i className="ion-heart"></i> 29
-                                        </button>
-									</div>
-									<a href="" className="preview-link">
-										<h1>How to build webapps that scale</h1>
-										<p>This is the description for the post.</p>
-										<span>Read more...</span>
-									</a>
-								</div>
-
-								<div className="article-preview">
-									<div className="article-meta">
-										<a href="profile.html"><img src="http://i.imgur.com/N4VcUeJ.jpg" /></a>
-										<div className="info">
-											<a href="" className="author">Albert Pai</a>
-											<span className="date">January 20th</span>
-										</div>
-										<button className="btn btn-outline-primary btn-sm pull-xs-right">
-											<i className="ion-heart"></i> 32
-                                        </button>
-									</div>
-									<a href="" className="preview-link">
-										<h1>The song you won't ever stop singing. No matter how hard you try.</h1>
-										<p>This is the description for the post.</p>
-										<span>Read more...</span>
-									</a>
-								</div>
+									))
+								}
 
 							</div>
 

@@ -14,7 +14,7 @@ function Article(body) {
 }
 
 // Assign the dumpy value to userId if it isn't provided.
-Article.findOne = async function (key, value, userId = "<NONE>") {
+Article.findByKey = async function (key, value, userId = "<NONE>") {
 	const doc = await knex
 		.select({
 			// ID
@@ -71,14 +71,13 @@ Article.findOne = async function (key, value, userId = "<NONE>") {
 				this.andOn("follow.UserId", knex.raw("?", [userId]));
 			}
 		)
-		.where(key, value)
+		.whereIn(key, value)
 		.then((articles) => articles.map((article) => {
 			article["author.following"] = Boolean(article["author.following"]);
 			article.tagList = article.tagList ? article.tagList.split(",") : [];
 			const unflatted = flat.unflatten(article);
 			return new this(unflatted);
-		}))
-		.then((articles) => articles[0]);
+		}));
 
 	if (doc) {
 		return new this(doc);
@@ -87,12 +86,27 @@ Article.findOne = async function (key, value, userId = "<NONE>") {
 	return null;
 };
 
-Article.getById = function (articleId, userId) {
-	return this.findOne("article.ArticleId", articleId, userId);
+Article.getById = async function (articleId, userId) {
+	return this
+		.findByKey("article.ArticleId", [articleId], userId)
+		.then((articles) => articles[0]);
 };
 
-Article.getBySlug = function (slug, userId) {
-	return this.findOne("article.Slug", slug, userId);
+Article.getBySlug = async function (slug, userId) {
+	return this
+		.findByKey("article.Slug", [slug], userId)
+		.then((articles) => articles[0]);
+};
+
+Article.getBySlugs = async function (slug, userId) {
+	return this
+		.findByKey("article.Slug", slug, userId)
+		.then((articles) => _
+			.chain(articles)
+			.map((article) => article)
+			.reverse()
+			.value()
+		);
 };
 
 Article.create = async function (title, description, body, tagList, userId) {

@@ -1,5 +1,6 @@
 "use strict";
 
+const Bluebird = require("bluebird");
 const Article = require("./article.model");
 const logger = require("../utils/logger");
 const knex = require("../utils/database");
@@ -201,6 +202,86 @@ async function removeComment(req, res) {
 	return res.send();
 }
 
+async function list(req, res) {
+	const { user, query: payload } = req;
+
+	let query = knex
+		.table({ article: "Article" });
+
+	if (payload.tag) {
+		query = query.whereExists(
+			function () {
+				this
+					.from({ tag: "ArticleTag" })
+					.whereRaw("tag.ArticleId = article.ArticleId")
+					.where("Tag", payload.tag)
+					.limit(1);
+			}
+		);
+	}
+
+	if (payload.author) {
+		query = query.whereExists(
+			function () {
+				this
+					.from({ user: "User" })
+					.whereRaw("user.UserId = article.UserId")
+					.where("Name", payload.author)
+					.limit(1);
+			}
+		);
+	}
+
+	if (payload.favorited) {
+		query = query.whereExists(
+			function () {
+				this
+					.from({ favorited: "ArticleFavorite" })
+					.whereRaw("favorited.ArticleId = article.ArticleId")
+					.where(
+						"favorited.UserId",
+						knex
+							.select("UserId")
+							.table("User")
+							.where("Name", payload.favorited)
+					)
+					.limit(1);
+			}
+		);
+	}
+
+	if (payload.followedBy) {
+		query = query.whereExists(
+			function () {
+				this
+					.from({ followed: "UserFollow" })
+					.whereRaw("followed.NowFollowingUser = article.UserId")
+					.where(
+						"followed.UserId",
+						payload.followedBy
+					)
+					.limit(1);
+			}
+		);
+	}
+
+	const response = await Bluebird.props({
+		articles: query
+			.clone()
+			.select("slug")
+			.limit(payload.limit)
+			.offset(payload.limit * payload.offset)
+			.orderBy("EnterDate", "DESC")
+			.then((articles) => Article.getBySlugs(articles.map((item) => item.slug), user?.id)),
+		articlesCount: query
+			.clone()
+			.count("*", { as: "count" })
+			.then((count) => count[0].count)
+	});
+
+	return res.json(response);
+}
+
 module.exports = {
 	create,
 	get,
@@ -212,5 +293,6 @@ module.exports = {
 	remove,
 	addComment,
 	getComment,
-	removeComment
+	removeComment,
+	list
 };

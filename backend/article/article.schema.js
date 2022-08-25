@@ -25,6 +25,24 @@ const create = {
 	})
 };
 
+const list = {
+	params: Joi.object({
+		tag: Joi.string(),
+		author: Joi.string(),
+		favorited: Joi.string(),
+		followedBy: Joi.number(),
+		offset: Joi
+			.number()
+			.description("Allows you to omit a specified number of pages before the beginning of the result set")
+			.default(0),
+		limit: Joi
+			.number()
+			.description("Allows you to limit the number of rows returned from a query")
+			.default(20)
+	})
+};
+
 module.exports = {
-	create
+	create,
+	list
 };

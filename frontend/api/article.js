@@ -65,6 +65,13 @@ module.exports = {
 			.get()
 			.delete(`/api/article/${slug}/comment/${id}`)
 			.then((response) => response.data);
+	},
+
+	list(payload) {
+		return agent
+			.get()
+			.get("/api/article", { params: payload })
+			.then((response) => response.data);
 	}
 
 };

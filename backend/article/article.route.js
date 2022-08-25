@@ -41,6 +41,11 @@ router.param(
 
 router
 	.route("/")
+	.get(
+		auth.optional,
+		validate(schema.list),
+		controller.list
+	)
 	.post(
 		auth,
 		validate(schema.create),
