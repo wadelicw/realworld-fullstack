@@ -1,11 +1,9 @@
 "use strict";
 
 const axios = require("axios");
-const store = require("../store");
 
 function get() {
-	const accessToken = store.getStore().getState()?.user?.accessToken;
-	console.log("token", accessToken)
+	const accessToken = localStorage.getItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY);
 	const headers = {};
 
 	if (accessToken) {

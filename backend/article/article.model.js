@@ -33,7 +33,7 @@ Article.findOne = async function (key, value, userId = "<NONE>") {
 			"author.followingCount": knex
 				.table({ follow: "UserFollow" })
 				.count()
-				.where("follow.NowFollowingUser", "article.ArticleId"),
+				.where("follow.NowFollowingUser", knex.raw("article.UserId")),
 			// Tags
 			tagList: knex
 				.table({ tag: "ArticleTag" })
@@ -44,7 +44,7 @@ Article.findOne = async function (key, value, userId = "<NONE>") {
 			favoritesCount: knex
 				.table({ favorite: "ArticleFavorite" })
 				.count()
-				.where("favorite.ArticleId", "article.ArticleId"),
+				.where(knex.raw("favorite.ArticleId = article.ArticleId")),
 			// Dates
 			createdAt: "article.EnterDate",
 			updatedAt: "article.LastUpdate"

@@ -138,7 +138,7 @@ class Article extends React.Component {
 											return Router.replace("/login");
 										}
 
-										if (author?.following) {
+										if (favorited) {
 											this.unFavorite(slug);
 										} else {
 											this.favorite(slug);
@@ -178,7 +178,6 @@ class Article extends React.Component {
 			favorited, favoritesCount
 		} = this.state.data;
 		const { slug, user } = this.props;
-		console.log(slug, user);
 		return (
 			<>
 				<NextSeo title="Article" />
