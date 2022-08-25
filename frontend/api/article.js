@@ -44,6 +44,27 @@ module.exports = {
 			.get()
 			.delete(`/api/article/${slug}`)
 			.then((response) => response.data);
+	},
+
+	getComment(slug) {
+		return agent
+			.get()
+			.get(`/api/article/${slug}/comment`)
+			.then((response) => response.data);
+	},
+
+	addComment(slug, comment) {
+		return agent
+			.get()
+			.post(`/api/article/${slug}/comment`, { comment })
+			.then((response) => response.data);
+	},
+
+	removeComment(slug, id) {
+		return agent
+			.get()
+			.delete(`/api/article/${slug}/comment/${id}`)
+			.then((response) => response.data);
 	}
 
 };

@@ -157,6 +157,11 @@ Article.prototype.remove = async function () {
 		.delete();
 
 	await knex
+		.table("ArticleComment")
+		.where("ArticleId", this.id)
+		.delete();
+
+	await knex
 		.table("Article")
 		.where("ArticleId", this.id)
 		.delete();
@@ -191,6 +196,64 @@ Article.prototype.update = async function (title, description, body, tagList, us
 	}
 
 	return Article.getBySlug(slug, userId);
+};
+
+Article.prototype.addComment = async function (body, userId) {
+	const commentId = await knex
+		.table("ArticleComment")
+		.insert({
+			ArticleId: this.id,
+			Body: body,
+			UserId: userId
+		})
+		.then((response) => response[0]);
+
+	return this.getComment(commentId);
+};
+
+Article.prototype.getComment = function (commentId) {
+	return this
+		.listComments([commentId])
+		.then((comments) => comments[0]);
+};
+
+Article.prototype.listComments = async function (commentIds) {
+	const comments = await knex
+		.table({ comment: "ArticleComment" })
+		.select({
+			id: "ArticleCommentId",
+			createdAt: "comment.EnterDate",
+			updatedAt: "comment.LastUpdate",
+			body: "Body",
+			// Author Object
+			"author.id": "comment.UserId",
+			"author.name": "author.Name",
+			"author.bio": "author.Bio",
+			"author.image": "author.Image",
+			"author.following": knex.raw("IF(author.UserId, 1, 0)")
+		})
+		.leftJoin(
+			{ author: "User" },
+			"comment.UserId",
+			"author.UserId"
+		)
+		.where("comment.ArticleCommentId", "in", commentIds)
+		.orderBy("comment.EnterDate", "DESC")
+		.then((_comments) => _comments.map((comment) => {
+			comment["author.following"] = Boolean(comment["author.following"]);
+			return flat.unflatten(comment);
+		}));
+
+	return comments;
+};
+
+Article.prototype.removeComment = async function (commentId) {
+	await knex
+		.table("ArticleComment")
+		.where({ ArticleCommentId: commentId })
+		.delete();
+
+	return true;
 };
 
 module.exports = Article;

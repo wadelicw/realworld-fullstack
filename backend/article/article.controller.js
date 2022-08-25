@@ -2,6 +2,7 @@
 
 const Article = require("./article.model");
 const logger = require("../utils/logger");
+const knex = require("../utils/database");
 
 async function create(req, res) {
 	const { user } = req;
@@ -143,6 +144,63 @@ async function remove(req, res) {
 	}
 }
 
+async function addComment(req, res) {
+	const { user, article } = req;
+	const payload = req.body.comment;
+
+	if (!user) {
+		return res
+			.status(403)
+			.send({
+				message: "Please login before adding new comment"
+			});
+	}
+
+	const comment = await article.addComment(payload, user.id);
+	return res.json({ comment });
+}
+
+async function getComment(req, res) {
+	const { article } = req;
+
+	const ids = await knex
+		.table("ArticleComment")
+		.select({ id: "ArticleCommentId" })
+		.where({ ArticleId: article.id })
+		.then((comments) => comments.map((comment) => comment.id));
+
+	const comments = await article.listComments(ids);
+
+	return res.json({ comments });
+}
+
+async function removeComment(req, res) {
+	const { id } = req.params;
+	const { user, article } = req;
+
+	const comment = await article.getComment(id);
+
+	if (!comment) {
+		return res
+			.status(400)
+			.json({
+				message: "Invalid comment id"
+			});
+	}
+
+	if (!user || user.id !== comment.author.id) {
+		return res
+			.status(403)
+			.json({
+				message: "You are not allowed to remove a comment that does not belong to you."
+			});
+	}
+
+	await article.removeComment(id);
+
+	return res.send();
+}
+
 module.exports = {
 	create,
 	get,
@@ -151,5 +209,8 @@ module.exports = {
 	unfavorite,
 	allowAuthorOnly,
 	update,
-	remove
+	remove,
+	addComment,
+	getComment,
+	removeComment
 };

@@ -20,6 +20,13 @@ router
 	.post(controller.favorite)
 	.delete(controller.unfavorite);
 
+router
+	.route("/:slug/comment")
+	.get(controller.getComment)
+	.post(controller.addComment);
+
+router.delete("/:slug/comment/:id", controller.removeComment);
+
 router.param(
 	"slug",
 	(req, res, next, id) => {
