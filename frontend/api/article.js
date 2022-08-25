@@ -30,6 +30,20 @@ module.exports = {
 			.get()
 			.delete(`/api/article/${slug}/favorite`)
 			.then((response) => response.data);
+	},
+
+	update(slug, article) {
+		return agent
+			.get()
+			.put(`/api/article/${slug}`, { article })
+			.then((response) => response.data);
+	},
+
+	remove(slug) {
+		return agent
+			.get()
+			.delete(`/api/article/${slug}`)
+			.then((response) => response.data);
 	}
 
 };

@@ -87,10 +87,69 @@ async function unfavorite(req, res) {
 	return res.json({ article });
 }
 
+async function allowAuthorOnly(req, res, next) {
+	const { user, article } = req;
+
+	if (!user || user.id !== article.author.id) {
+		return res
+			.status(403)
+			.json({
+				message: "Only the author of the article can update or delete the article"
+			});
+	}
+
+	return next();
+}
+
+async function update(req, res) {
+	let { user, article } = req;
+	const paylaod = req.body.article;
+
+	try {
+		article = await article.update(
+			paylaod.title,
+			paylaod.description,
+			paylaod.body,
+			paylaod.tagList,
+			user.id
+		);
+	} catch (error) {
+		if (error.code === "ER_DUP_ENTRY") {
+			return res
+				.status(400)
+				.json({
+					message: "The article title has been used by another article"
+				});
+		}
+
+		// Log the internal error for debugging
+		logger.error(error, { label: "Article" });
+		return res.status(500).json();
+	}
+
+	return res.json({ article });
+}
+
+async function remove(req, res) {
+	const { article } = req;
+
+	try {
+		await article.remove();
+		return res.json({});
+	} catch (error) {
+		// Log the internal error for debugging
+		logger.error(error, { label: "Article" });
+		return res.status(500).json();
+	}
+}
+
 module.exports = {
 	create,
 	get,
 	getArticle,
 	favorite,
-	unfavorite
+	unfavorite,
+	allowAuthorOnly,
+	update,
+	remove
 };

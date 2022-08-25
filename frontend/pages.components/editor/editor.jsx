@@ -3,9 +3,15 @@ import Router from "next/router";
 import autobind from "autobind-decorator";
 import Immutable from "immutable";
 import { NextSeo } from "next-seo";
+import { connect } from "react-redux";
 
 import api from "../../api";
 
+@connect(
+	state => ({
+		user: state.user
+	})
+)
 class Editor extends React.Component {
 
 	constructor(props) {
@@ -17,8 +23,36 @@ class Editor extends React.Component {
 				description: "",
 				body: "",
 				tagList: []
-			}
+			},
+			data: {},
 		};
+	}
+
+	async componentDidMount() {
+		if (this.props.slug) {
+			await this.getArticle();
+		}
+	}
+
+	@autobind
+	async getArticle() {
+		try {
+			const { slug } = this.props;
+			const { article } = await api.article.get(slug);
+			this.setState({
+				payload: {
+					title: article.title,
+					description: article.description,
+					body: article.body,
+					tagList: article.tagList
+				},
+				data: article,
+				loading: false
+			})
+		} catch (error) {
+			console.error(error);
+			return window.alert(error?.message);
+		}
 	}
 
 	@autobind
@@ -32,8 +66,27 @@ class Editor extends React.Component {
 		}
 	}
 
+	@autobind
+	async update(user) {
+		try {
+			const { data } = this.state;
+
+			if (data.author?.name !== user.user) {
+				window.alert("Only the author of the article can update the article");
+				return Router.replace(`/`);
+			}
+
+			await api.article.update(data.slug, this.state.payload);
+			return Router.replace(`/article/${data.slug}`);
+		} catch (error) {
+			console.error(error);
+			return window.alert(error?.message);
+		}
+	}
+
 	render() {
 		const { title, description, body, tagList } = this.state.payload;
+		const { slug, user } = this.props;
 
 		return (
 			<>
@@ -146,9 +199,9 @@ class Editor extends React.Component {
 										<button
 											className="btn btn-lg pull-xs-right btn-primary"
 											type="button"
-											onClick={() => this.create()}
+											onClick={() => slug ? this.update(user) : this.create()}
 										>
-											Publish Article
+											{slug ? "Update" : "Publish"} Article
                         				</button>
 									</fieldset>
 								</form>
@@ -162,5 +215,12 @@ class Editor extends React.Component {
 	}
 
 }
+
+Editor.getInitialProps = function (context) {
+	const query = context.query || {};
+	const slug = query.slug;
+	return { slug };
+};
+
 
 export default Editor;

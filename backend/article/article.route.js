@@ -11,7 +11,9 @@ const router = PromiseRouter();
 
 router
 	.route("/:slug")
-	.get(controller.get);
+	.get(controller.get)
+	.put(controller.allowAuthorOnly, controller.update)
+	.delete(controller.allowAuthorOnly, controller.remove);
 
 router
 	.route("/:slug/favorite")

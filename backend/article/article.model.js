@@ -145,4 +145,52 @@ Article.prototype.unfavorite = async function (userId) {
 	return Article.getById(this.id, userId);
 };
 
+Article.prototype.remove = async function () {
+	await knex
+		.table("ArticleFavorite")
+		.where("ArticleId", this.id)
+		.delete();
+
+	await knex
+		.table("ArticleTag")
+		.where("ArticleId", this.id)
+		.delete();
+
+	await knex
+		.table("Article")
+		.where("ArticleId", this.id)
+		.delete();
+
+	return true;
+};
+
+Article.prototype.update = async function (title, description, body, tagList, userId) {
+	const slug = slugify(title).toLowerCase();
+
+	await knex
+		.table("Article")
+		.update({
+			title,
+			description,
+			body,
+			slug
+		})
+		.where("ArticleId", this.id);
+
+	if (tagList && tagList.length > 0) {
+		await knex
+			.table("ArticleTag")
+			.where("ArticleId", this.id)
+			.delete();
+
+		await knex
+			.table("ArticleTag")
+			.insert(tagList.map((tag) => ({ ArticleId: this.id, Tag: tag })))
+			.onConflict()
+			.ignore();
+	}
+
+	return Article.getBySlug(slug, userId);
+};
+
 module.exports = Article;

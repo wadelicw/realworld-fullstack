@@ -89,6 +89,20 @@ class Article extends React.Component {
 	}
 
 	@autobind
+	async remove(slug) {
+		try {
+			if (window.confirm("Are you sure to remove this article?")) {
+				await api.article.remove(slug);
+				return Router.replace("/");
+			}
+			return;
+		} catch (error) {
+			console.error(error);
+			return window.alert(error?.message);
+		}
+	}
+
+	@autobind
 	renderAuthorDetail() {
 		const {
 			author, updatedAt, favorited, favoritesCount
@@ -145,7 +159,7 @@ class Article extends React.Component {
 										}
 									}}
 								>
-									<i className="ion-heart"></i>
+									<i className="ion-heart" />
 									&nbsp;
 									{favorited ? "Unfavorite" : "Favorite"} Post <span className="counter">({favoritesCount})</span>
 								</button>
@@ -153,19 +167,24 @@ class Article extends React.Component {
 						)
 						: (
 							<>
-								<button className="btn btn-sm btn-outline-secondary">
-									<i className="ion-plus-round"></i>
+								<button
+									className="btn btn-sm btn-outline-secondary"
+									onClick={() => Router.replace(`/editor/${slug}`)}
+								>
+									<i className="ion-edit" />
 									&nbsp;
-									Follow {author?.name} <span className="counter">({author?.followingCount})</span>
+									Edit Article
 								</button>
 								&nbsp;&nbsp;
-								<button className="btn btn-sm btn-outline-primary">
-									<i className="ion-heart"></i>
+								<button
+									className="btn btn-sm btn-outline-danger"
+									onClick={() => this.remove(slug)}
+								>
+									<i className="ion-trash-a" />
 									&nbsp;
-									Favorite Post <span className="counter">({favoritesCount})</span>
+									Delete Article
 								</button>
 							</>
-
 						)
 				}
 			</div>
