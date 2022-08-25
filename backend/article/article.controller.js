@@ -53,7 +53,6 @@ async function getArticle(req, res, next, slug) {
 	return next();
 }
 
-
 async function favorite(req, res) {
 	const { user } = req;
 	let { article } = req;
@@ -103,7 +102,8 @@ async function allowAuthorOnly(req, res, next) {
 }
 
 async function update(req, res) {
-	let { user, article } = req;
+	let { article } = req;
+	const { user } = req;
 	const paylaod = req.body.article;
 
 	try {
