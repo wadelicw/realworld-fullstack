@@ -90,7 +90,7 @@ class Editor extends React.Component {
 
 		return (
 			<>
-				<NextSeo title="Article Editor" />
+				<NextSeo title="Editor" />
 
 				<div className="editor-page">
 					<div className="container page">

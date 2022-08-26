@@ -52,7 +52,7 @@ class Register extends React.Component {
 	render() {
 		return (
 			<>
-				<NextSeo title="Login" />
+				<NextSeo title="Sign Up" />
 
 				<div className="auth-page">
 					<div className="container page">
