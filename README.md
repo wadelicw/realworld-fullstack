@@ -1,10 +1,9 @@
-# Node.js + Express.js + Knex + MySQL + REact.js + Next.js fullstack Example RealWorld App
+# Node.js + Express.js + Knex + MySQL + React.js + Next.js fullstack Example RealWorld App
 
 > ### React.js codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld) spec and API.
 
 
-### [Demo](https://demo.realworld.io/)&nbsp;&nbsp;&nbsp;&nbsp;[RealWorld](https://github.com/gothinkster/realworld)
-
+### [Standard Demo](https://demo.realworld.io/)&nbsp;&nbsp;&nbsp;&nbsp;[RealWorld](https://github.com/gothinkster/realworld)
 
 This codebase was created to demonstrate a fully fledged fullstack application built with React.js + Next.js including CRUD operations, authentication, routing, pagination, and more.
 
@@ -15,7 +14,7 @@ For more information on how to this works with other frontends/backends, head ov
 
 ## Functionality overview
 
-The example application is a social blogging site (i.e. a Medium.com clone) called "Conduit". It uses a custom API for all requests, including authentication. You can view a live demo over at https://redux.productionready.io/
+The example application is a social blogging site (i.e. a Medium.com clone) called "Conduit". It uses a custom API for all requests, including authentication.
 
 **General functionality:**
 
