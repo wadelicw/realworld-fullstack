@@ -79,12 +79,34 @@ class Home extends React.Component {
 							<div className="col-md-9">
 								<div className="feed-toggle">
 									<ul className="nav nav-pills outline-active">
-										<li className="nav-item">
-											<a className="nav-link disabled" href="">Your Feed</a>
+										<li
+											className="nav-item pointer"
+											onClick={() => this.setState(
+												Immutable
+													.Map(this.state)
+													.setIn(["payload", "followedBy"], user?.user)
+													.toJS()
+												,
+												this.listArticle
+											)}
+										>
+											<a
+												className={classnames(
+													"nav-link",
+													!user.accessToken && "disabled",
+													payload.followedBy && "active"
+												)}
+											>
+												Your Feed
+											</a>
 										</li>
 										<li
 											className="nav-item pointer"
-											onClick={() => this.setState({ payload: this.getPayload() })}
+											onClick={() =>
+												this.setState(
+													{ payload: this.getPayload() },
+													this.listArticle
+												)}
 										>
 											<a className={classnames(
 												"nav-link",

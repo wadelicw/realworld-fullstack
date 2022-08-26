@@ -255,9 +255,14 @@ async function list(req, res) {
 			function () {
 				this
 					.from({ followed: "UserFollow" })
+					.innerJoin(
+						{ user: "User" },
+						"followed.UserId",
+						"user.UserId"
+					)
 					.whereRaw("followed.NowFollowingUser = article.UserId")
 					.where(
-						"followed.UserId",
+						"user.Name",
 						payload.followedBy
 					)
 					.limit(1);
