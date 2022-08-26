@@ -84,6 +84,7 @@ class Home extends React.Component {
 												Immutable
 													.Map(this.state)
 													.setIn(["payload", "followedBy"], user?.user)
+													.setIn(["payload", "tag"], "")
 													.toJS()
 												,
 												this.listArticle
