@@ -11,6 +11,7 @@ router.get(
 );
 
 router.use("/", require("./user/user.route"));
+router.use("/tag", require("./tag/tag.route"));
 router.use("/profile", require("./profile/profile.route"));
 router.use("/article", require("./article/article.route"));
 

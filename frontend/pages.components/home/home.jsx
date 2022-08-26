@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import moment from "moment";
 import autobind from "autobind-decorator";
+import Immutable from "immutable";
 import classnames from "classnames";
 import Router from "next/router";
 import { NextSeo } from "next-seo";
@@ -19,14 +20,10 @@ class Home extends React.Component {
 		super(props);
 		this.state = {
 			loading: true,
-			data: {},
+			tags: [],
+			data: [],
 			count: 0,
-			payload: {
-				tag: "",
-				followedBy: "",
-				limit: 10,
-				offset: 0
-			}
+			payload: this.getPayload()
 		};
 	}
 
@@ -34,12 +31,26 @@ class Home extends React.Component {
 		await this.listArticle();
 	}
 
+	@autobind
+	getPayload() {
+		return {
+			tag: "",
+			followedBy: "",
+			limit: 10,
+			offset: 0
+		};
+	}
+
+	@autobind
 	async listArticle() {
 		try {
 			const payload = this.state.payload
-			const { articles, count } = await api.article.list(payload);
+			const [{ articles, count }, { tags }] = await Promise.all([
+				api.article.list(payload),
+				api.tag.list()
+			]);
 			console.log(articles);
-			this.setState({ data: articles, count, loading: false })
+			this.setState({ data: articles, count, tags, loading: false });
 		} catch (error) {
 			console.error(error);
 			return window.alert(error?.message);
@@ -47,7 +58,7 @@ class Home extends React.Component {
 	}
 
 	render() {
-		const { data, payload } = this.state;
+		const { data, count, tags, payload } = this.state;
 		const { user } = this.props;
 
 		return (
@@ -71,9 +82,27 @@ class Home extends React.Component {
 										<li className="nav-item">
 											<a className="nav-link disabled" href="">Your Feed</a>
 										</li>
-										<li className="nav-item">
-											<a className="nav-link active" href="">Global Feed</a>
+										<li
+											className="nav-item pointer"
+											onClick={() => this.setState({ payload: this.getPayload() })}
+										>
+											<a className={classnames(
+												"nav-link",
+												!payload.tag && !payload.followedBy && "active"
+											)} >
+												Global Feed
+											</a>
 										</li>
+										{
+											payload.tag && (
+												<li className="nav-item">
+													<a className="nav-link active" href="">
+														<i className="ion-pound" />
+														{payload.tag}
+													</a>
+												</li>
+											)
+										}
 									</ul>
 								</div>
 
@@ -94,11 +123,13 @@ class Home extends React.Component {
 													<i className="ion-heart" /> {row?.favoritesCount}
 												</button>
 											</div>
-											<a href="" className="preview-link">
-												<h1>{row?.title}</h1>
-												<p>{row?.description}</p>
-												<a>Read more...</a>
-											</a>
+											<Link href={`/article/${row?.slug}`}>
+												<a className="preview-link">
+													<h1>{row?.title}</h1>
+													<p>{row?.description}</p>
+													<p>Read more...</p>
+												</a>
+											</Link>
 										</div>
 									))
 								}
@@ -110,14 +141,24 @@ class Home extends React.Component {
 									<p>Popular Tags</p>
 
 									<div className="tag-list">
-										<a href="" className="tag-pill tag-default">programming</a>
-										<a href="" className="tag-pill tag-default">javascript</a>
-										<a href="" className="tag-pill tag-default">emberjs</a>
-										<a href="" className="tag-pill tag-default">angularjs</a>
-										<a href="" className="tag-pill tag-default">react</a>
-										<a href="" className="tag-pill tag-default">mean</a>
-										<a href="" className="tag-pill tag-default">node</a>
-										<a href="" className="tag-pill tag-default">rails</a>
+										{
+											tags.length > 0 && tags.map((row, index) => (
+												<a
+													className="tag-pill tag-default pointer"
+													key={index}
+													onClick={() => this.setState(
+														Immutable
+															.Map(this.state)
+															.setIn(["payload", "tag"], row)
+															.toJS()
+														,
+														this.listArticle
+													)}
+												>
+													{row}
+												</a>
+											))
+										}
 									</div>
 								</div>
 							</div>
