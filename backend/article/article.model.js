@@ -105,8 +105,7 @@ Article.getBySlugs = async function (slug, userId) {
 			.chain(articles)
 			.map((article) => article)
 			.reverse()
-			.value()
-		);
+			.value());
 };
 
 Article.create = async function (title, description, body, tagList, userId) {
