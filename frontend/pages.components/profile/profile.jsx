@@ -1,5 +1,8 @@
 import React from "react";
+import Link from "next/link";
+import moment from "moment";
 import autobind from "autobind-decorator";
+import Immutable from "immutable";
 import classnames from "classnames";
 import Router from "next/router";
 import { NextSeo } from "next-seo";
@@ -16,7 +19,11 @@ class Profile extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			data: {}
+			loading: true,
+			data: {},
+			articles: [],
+			count: 0,
+			payload: this.getPayload()
 		};
 	}
 
@@ -25,12 +32,26 @@ class Profile extends React.Component {
 	}
 
 	@autobind
+	getPayload() {
+		return {
+			author: this.props.profileName,
+			favorited: "",
+			limit: 10,
+			offset: 0
+		};
+	}
+
+	@autobind
 	async getProfile() {
 		const name = this.props.profileName;
+		const payload = Immutable.Map(this.state.payload).toJS();
 
 		try {
-			const { profile } = await api.profile.getProfile(name);
-			this.setState({ data: profile })
+			const [{ profile }, { articles, count }] = await Promise.all([
+				api.profile.getProfile(name),
+				api.article.list(payload),
+			]);
+			this.setState({ data: profile, articles, count, loading: false })
 		} catch (error) {
 			console.error(error);
 			return window.alert(error?.message);
@@ -65,6 +86,7 @@ class Profile extends React.Component {
 
 	render() {
 		const { bio, following, image, name } = this.state.data;
+		const { articles, payload } = this.state;
 		const profileName = this.props.profileName;
 
 		return (
@@ -126,55 +148,91 @@ class Profile extends React.Component {
 							<div className="col-xs-12 col-md-10 offset-md-1">
 								<div className="articles-toggle">
 									<ul className="nav nav-pills outline-active">
-										<li className="nav-item">
-											<a className="nav-link active" href="">My Articles</a>
+										<li
+											className="nav-item pointer"
+											onClick={() => this.setState(
+												Immutable
+													.Map(this.state)
+													.setIn(["payload", "author"], profileName)
+													.setIn(["payload", "favorited"], "")
+													.toJS()
+												,
+												this.getProfile
+											)}
+										>
+											<a
+												className={classnames(
+													"nav-link",
+													payload.author && "active"
+												)}
+											>
+												My Articles
+											</a>
 										</li>
-										<li className="nav-item">
-											<a className="nav-link" href="">Favorited Articles</a>
+										<li
+											className="nav-item pointer"
+											onClick={() => this.setState(
+												Immutable
+													.Map(this.state)
+													.setIn(["payload", "favorited"], profileName)
+													.setIn(["payload", "author"], "")
+													.toJS()
+												,
+												this.getProfile
+											)}
+										>
+											<a
+												className={classnames(
+													"nav-link",
+													payload.favorited && "active"
+												)}
+											>
+												Favorited Articles
+											</a>
 										</li>
 									</ul>
 								</div>
 
-								<div className="article-preview">
-									<div className="article-meta">
-										<a href=""><img src="http://i.imgur.com/Qr71crq.jpg" /></a>
-										<div className="info">
-											<a href="" className="author">Eric Simons</a>
-											<span className="date">January 20th</span>
-										</div>
-										<button className="btn btn-outline-primary btn-sm pull-xs-right">
-											<i className="ion-heart"></i> 29
-										</button>
-									</div>
-									<a href="" className="preview-link">
-										<h1>How to build webapps that scale</h1>
-										<p>This is the description for the post.</p>
-										<span>Read more...</span>
-									</a>
-								</div>
+								{
+									articles.length > 0 && articles.map((row, index) => (
+										<div className="article-preview" key={index}>
+											<div className="article-meta">
+												<Link href={`/profile/${row?.author?.name}`}>
+													<a><img src={row?.author?.image} /></a>
+												</Link>
+												<div className="info">
+													<Link href={`/profile/${row?.author?.name}`}>
+														<a className="author">{row?.author?.name}</a>
+													</Link>
+													<span className="date">{moment(row?.updatedAt).format("MMMM Do")}</span>
+												</div>
+												<button className="btn btn-outline-primary btn-sm pull-xs-right">
+													<i className="ion-heart" /> {row?.favoritesCount}
+												</button>
+											</div>
+											<Link href={`/article/${row?.slug}`}>
+												<a className="preview-link">
+													<h1>{row?.title}</h1>
+													<p>{row?.description}</p>
+													<p>Read more...</p>
+													<ul className="tag-list">
+														{
+															row?.tagList?.length > 0 && row.tagList.map((row, index) => (
+																<li
+																	className="tag-default tag-pill tag-outline"
+																	key={index}
+																>
+																	{row}
+																</li>
+															))
+														}
+													</ul>
 
-								<div className="article-preview">
-									<div className="article-meta">
-										<a href=""><img src="http://i.imgur.com/N4VcUeJ.jpg" /></a>
-										<div className="info">
-											<a href="" className="author">Albert Pai</a>
-											<span className="date">January 20th</span>
+												</a>
+											</Link>
 										</div>
-										<button className="btn btn-outline-primary btn-sm pull-xs-right">
-											<i className="ion-heart"></i> 32
-										</button>
-									</div>
-									<a href="" className="preview-link">
-										<h1>The song you won't ever stop singing. No matter how hard you try.</h1>
-										<p>This is the description for the post.</p>
-										<span>Read more...</span>
-										<ul className="tag-list">
-											<li className="tag-default tag-pill tag-outline">Music</li>
-											<li className="tag-default tag-pill tag-outline">Song</li>
-										</ul>
-									</a>
-								</div>
-
+									))
+								}
 
 							</div>
 

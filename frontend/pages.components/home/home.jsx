@@ -4,7 +4,6 @@ import moment from "moment";
 import autobind from "autobind-decorator";
 import Immutable from "immutable";
 import classnames from "classnames";
-import Router from "next/router";
 import { NextSeo } from "next-seo";
 import { connect } from "react-redux";
 
@@ -44,7 +43,7 @@ class Home extends React.Component {
 	@autobind
 	async listArticle() {
 		try {
-			const payload = this.state.payload
+			const payload = this.state.payload;
 			const [{ articles, count }, { tags }] = await Promise.all([
 				api.article.list(payload),
 				api.tag.list()
@@ -58,7 +57,7 @@ class Home extends React.Component {
 	}
 
 	render() {
-		const { data, count, tags, payload } = this.state;
+		const { data, tags, payload } = this.state;
 		const { user } = this.props;
 
 		return (
