@@ -10,7 +10,6 @@ We've gone to great lengths to adhere to the React.js + Next.js community styleg
 
 For more information on how to this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
 
-
 ## Functionality overview
 
 The example application is a social blogging site (i.e. a Medium.com clone) called "Conduit". It uses a custom API for all requests, including authentication.
@@ -45,4 +44,3 @@ The example application is a social blogging site (i.e. a Medium.com clone) call
     - List of articles populated from author's created articles or author's favorited articles
 
 <br />
-
