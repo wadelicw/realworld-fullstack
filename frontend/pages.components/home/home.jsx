@@ -48,7 +48,6 @@ class Home extends React.Component {
 				api.article.list(payload),
 				api.tag.list()
 			]);
-			console.log(articles);
 			this.setState({ data: articles, count, tags, loading: false });
 		} catch (error) {
 			console.error(error);
