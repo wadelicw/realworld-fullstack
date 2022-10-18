@@ -1,0 +1,9 @@
+{
+	"user": {
+		"email": "testing@test.com",
+		"token": "<ACCESS_TOKEN>",
+		"name": "testing",
+		"bio": null,
+		"image": null
+	}
+}

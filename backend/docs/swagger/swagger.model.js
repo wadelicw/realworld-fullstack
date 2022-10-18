@@ -7,37 +7,55 @@ const getSwaggerFromJoi = require("./getSwaggerFromJoi");
  * Schemas
  *
  */
-// const schema = getSwaggerFromJoi(
-// 	{
-// 		login: require("../schema/login"),
-// 		searchTerm: require("../schema/search-term")
-// 	}
-// );
+const schema = getSwaggerFromJoi(
+	{
+		user: require("../../user/user.schema"),
+		profile: require("../../profile/profile.schema")
+	}
+);
+
+const HOST = "http://wade-realworld-app-demo.com";
 
 async function get() {
 
 	const json = {
 		swagger: "2.0",
 		info: {
-			title: "API Document",
+			title: "Real World Application API Document",
 			version: "1.0.0",
-			description: "Demo project API Documentation",
+			description: "Example Project (Express + MySql) codebase containing real world examples (CRUD, auth etc) that adheres to the RealWorld API spec.",
 			contact: {
 				name: "Wade Li",
+				url: "hhttps://github.com/wadelicw/realworld-fullstack",
 				email: "wadelicw@gmail.com"
 			},
+			license: {
+				name: "MIT",
+				url: "https://opensource.org/licenses/MIT"
+			}
 			// "x-logo": {
 			// 	"url": "",
 			// 	"altText": "Logo"
 			//   }
 		},
-		servers: [
-			{
-				url: "http://wade-realworld-app-demo.com/api",
-				description: "Wade Li demo project's API document"
-			}
+		// servers: [
+		// 	{
+		// 		url: HOST,
+		// 		description: "Wade Li demo project's API document"
+		// 	}
+		// ],
+		/**
+		 *
+		 * Base URL
+		 * The base URL for all API calls is defined using schemes, host and basePath:
+		 *
+		 */
+		host: HOST,
+		basePath: "/api",
+		schemes: [
+			"http"
+			// "https"
 		],
-		schemes: ["https", "http"],
 		consumes: ["application/json"],
 		produces: ["application/json"],
 		securityDefinitions: {
@@ -51,9 +69,267 @@ async function get() {
 			}
 		},
 		paths: {
-
+			"/users/login": {
+				/**
+				 *
+				 * Authentication
+				 *
+				 */
+				post: {
+					summary: "Existing User Login",
+					description: "Login for existing user",
+					tags: [
+						"User"
+					],
+					produces: [
+						"application/json"
+					],
+					operationId: "UserLogin",
+					parameters: [
+						{
+							name: "body",
+							in: "body",
+							required: true,
+							description: "Credentials to use",
+							schema: {
+								$ref: "#/definitions/UserLoginRequest"
+							}
+						}
+					],
+					responses: {
+						200: {
+							description: "Success",
+							schema: schema.user.doc,
+							examples: {
+								"application/json": require("../response/user.json")
+							}
+						},
+						401: {
+							description: "Unauthorized",
+							schema: {
+								$ref: "#/definitions/GeneralError"
+							}
+						},
+						422: {
+							description: "Unprocessable Entity",
+							schema: {
+								$ref: "#/definitions/GeneralError"
+							}
+						}
+					}
+				}
+			},
+			"/users": {
+				post: {
+					/**
+					 *
+					 * Registration
+					 *
+					 */
+					summary: "User Registration",
+					description: "Register a new user",
+					operationId: "CreateUser",
+					tags: [
+						"User"
+					],
+					produces: [
+						"application/json"
+					],
+					parameters: [
+						{
+							name: "body",
+							in: "body",
+							required: true,
+							description: "Details of the new user to register",
+							schema: {
+								$ref: "#/definitions/UserRegisterRequest"
+							}
+						}
+					],
+					responses: {
+						200: {
+							description: "Success",
+							schema: schema.user.doc,
+							examples: {
+								"application/json": require("../response/user.json")
+							}
+						},
+						422: {
+							description: "Unprocessable Entity",
+							schema: {
+								$ref: "#/definitions/GeneralError"
+							},
+							examples: {
+								"application/json": require("../response/user-register-422.json")
+							}
+						},
+						500: {
+							description: "Internal Server Error",
+							schema: {
+								$ref: "#/definitions/GeneralError"
+							}
+						}
+					}
+				}
+			},
+			"/user": {
+				/**
+				 *
+				 * Get Current User
+				 *
+				 */
+				get: {
+					summary: "Get Current User",
+					description: "Get the user document from requests' access token",
+					operationId: "getCurrentUser",
+					tags: [
+						"User"
+					],
+					produces: [
+						"application/json"
+					],
+					responses: {
+						200: {
+							description: "Success",
+							schema: schema.user.doc,
+							examples: {
+								"application/json": require("../response/user.json")
+							}
+						},
+						403: {
+							description: "Forbidden",
+							schema: {
+								$ref: "#/definitions/GeneralError"
+							}
+						},
+						default: {
+							description: "Internal Server Error",
+							schema: {
+								$ref: "#/definitions/GeneralError"
+							}
+						}
+					}
+				}
+			},
+			"/profiles/:username": {
+				get: {
+					summary: "Get a profile",
+					description: "Get a profile of a user of the system. Auth is optional",
+					tags: [
+						"Profile"
+					],
+					operationId: "GetProfileByUsername",
+					parameters: [
+						{
+							name: "username",
+							in: "path",
+							required: true,
+							description: "Username of the profile to get",
+							schema: {
+								$ref: "#/definitions/Username"
+							}
+						}
+					],
+					responses: {
+						200: {
+							description: "Success",
+							// Get profile API will not return the user token
+							schema: schema.profile.doc,
+							examples: {
+								"application/json": require("../response/profile.json")
+							}
+						},
+						403: {
+							description: "Forbidden",
+							schema: {
+								$ref: "#/definitions/GeneralError"
+							}
+						},
+						default: {
+							description: "Internal Server Error",
+							schema: {
+								$ref: "#/definitions/GeneralError"
+							}
+						}
+					}
+				}
+			},
+			"/profiles/{username}/follow": {
+				post: {
+					summary: "Follow a user",
+					description: "Follow a user by username",
+					tags: [
+						"Profile"
+					],
+					security: [
+						{
+							Token: []
+						}
+					],
+					operationId: "FollowUserByUsername",
+					parameters: [
+						{
+							name: "username",
+							in: "path",
+							required: true,
+							description: "Username of the profile to get",
+							schema: {
+								$ref: "#/definitions/Username"
+							}
+						}
+					],
+					responses: {
+						200: {
+							description: "Success",
+							"schema": {
+								"type": "object",
+								"properties": {
+									"username": {
+										"type": "string",
+										"minLength": 4,
+										"maxLength": 52,
+										"description": "The username (handle) of the user"
+									},
+									"email": {
+										"type": "string",
+										"format": "email",
+										"description": "The email address of the user"
+									},
+									"bio": {
+										"type": "string",
+										"description": "A short description about the user"
+									},
+									"image": {
+										"type": "string",
+										"description": "Image URL which is used to display on the website"
+									},
+									"following": {
+										"type": "boolean",
+										"description": "Variable that indicates the authenticated user is following the target user or not"
+									}
+								}
+							}
+						},
+						403: {
+							description: "Forbidden",
+							schema: {
+								$ref: "#/definitions/GeneralError"
+							}
+						},
+						default: {
+							description: "Internal Server Error",
+							schema: {
+								$ref: "#/definitions/GeneralError"
+							}
+						}
+					}
+				}
+			}
 		},
 		definitions: {
+			UserLoginRequest: schema.user.login,
+			UserRegisterRequest: schema.user.register,
+			Username: schema.user.doc.name,
 			GeneralError: {
 				properties: {
 					error: {
