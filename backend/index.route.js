@@ -15,6 +15,9 @@ router.use("/tag", require("./tag/tag.route"));
 router.use("/profile", require("./profile/profile.route"));
 router.use("/article", require("./article/article.route"));
 
+//For API document
+router.use("/docs", require("./docs/docs.route"))
+
 router.use((error, req, res, next) => {
 	// customize Joi validation errors
 	if (error instanceof ValidationError) {
