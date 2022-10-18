@@ -1,23 +1,19 @@
 "use strict";
-const _ = require("lodash");
-const getSwaggerFromJoi = require("./getSwaggerFromJoi");
-
+const j2s = require('joi-to-swagger');
+const user = require("../../user/user.schema");
 /**
  *
  * Schemas
  *
  */
-const schema = getSwaggerFromJoi(
-	{
-		user: require("../../user/user.schema"),
-		profile: require("../../profile/profile.schema")
-	}
-);
+const schema = {
+	user: j2s(user).swagger
+}
 
-const HOST = "http://wade-realworld-app-demo.com";
+const HOST = "wade-realworld-app-demo.com";
 
 async function get() {
-
+	console.log(schema.user)
 	const json = {
 		swagger: "2.0",
 		info: {
@@ -26,7 +22,7 @@ async function get() {
 			description: "Example Project (Express + MySql) codebase containing real world examples (CRUD, auth etc) that adheres to the RealWorld API spec.",
 			contact: {
 				name: "Wade Li",
-				url: "hhttps://github.com/wadelicw/realworld-fullstack",
+				url: "https://github.com/wadelicw/realworld-fullstack",
 				email: "wadelicw@gmail.com"
 			},
 			license: {
@@ -99,7 +95,7 @@ async function get() {
 					responses: {
 						200: {
 							description: "Success",
-							schema: schema.user.doc,
+							schema: schema.user.properties.doc,
 							examples: {
 								"application/json": require("../response/user.json")
 							}
@@ -149,7 +145,7 @@ async function get() {
 					responses: {
 						200: {
 							description: "Success",
-							schema: schema.user.doc,
+							schema: schema.user.properties.doc,
 							examples: {
 								"application/json": require("../response/user.json")
 							}
@@ -191,7 +187,7 @@ async function get() {
 					responses: {
 						200: {
 							description: "Success",
-							schema: schema.user.doc,
+							schema: schema.user.properties.doc,
 							examples: {
 								"application/json": require("../response/user.json")
 							}
@@ -234,7 +230,7 @@ async function get() {
 						200: {
 							description: "Success",
 							// Get profile API will not return the user token
-							schema: schema.profile.doc,
+							// schema: schema.profile.properties.doc,
 							examples: {
 								"application/json": require("../response/profile.json")
 							}
@@ -327,9 +323,9 @@ async function get() {
 			}
 		},
 		definitions: {
-			UserLoginRequest: schema.user.login,
-			UserRegisterRequest: schema.user.register,
-			Username: schema.user.doc.name,
+			UserLoginRequest: schema.user.properties.login,
+			UserRegisterRequest: schema.user.properties.register,
+			Username: schema.user.properties.doc.name,
 			GeneralError: {
 				properties: {
 					error: {
