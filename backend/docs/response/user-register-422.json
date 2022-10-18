@@ -1,9 +1,0 @@
-{
-    "errors": {
-        "body": [
-            "\"name\" length must be at least 3 characters long",
-            "\"email\" must be a valid email",
-            "\"password\" length must be at least 3 characters long"
-        ]
-    }
-}
