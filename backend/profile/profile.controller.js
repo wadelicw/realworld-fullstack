@@ -73,7 +73,7 @@ async function unFollow(req, res) {
 
 	if (user.name === name) {
 		return res
-			.status(400)
+			.status(403)
 			.json({ errors: { message: "You can't follow or unfollow yourself" } });
 	}
 

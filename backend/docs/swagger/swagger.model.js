@@ -185,6 +185,11 @@ function get() {
 					tags: [
 						"User"
 					],
+					security: [
+						{
+							Token: []
+						}
+					],
 					produces: [
 						"application/json"
 					],
@@ -211,22 +216,22 @@ function get() {
 					}
 				}
 			},
-			"/profiles/:username": {
+			"/profile/:name": {
 				get: {
 					summary: "Get a profile",
 					description: "Get a profile of a user of the system. Auth is optional",
 					tags: [
 						"Profile"
 					],
-					operationId: "GetProfileByUsername",
+					operationId: "GetProfileByName",
 					parameters: [
 						{
-							name: "username",
+							name: "name",
 							in: "path",
 							required: true,
-							description: "Username of the profile to get",
+							description: "Name of the profile to get",
 							schema: {
-								$ref: "#/definitions/Username"
+								$ref: "#/definitions/name"
 							}
 						}
 					],
@@ -261,10 +266,10 @@ function get() {
 					}
 				}
 			},
-			"/profiles/{username}/follow": {
+			"/profile/{name}/follow": {
 				post: {
 					summary: "Follow a user",
-					description: "Follow a user by username",
+					description: "Follow a user by name",
 					tags: [
 						"Profile"
 					],
@@ -273,15 +278,15 @@ function get() {
 							Token: []
 						}
 					],
-					operationId: "FollowUserByUsername",
+					operationId: "FollowUserByName",
 					parameters: [
 						{
-							name: "username",
+							name: "name",
 							in: "path",
 							required: true,
-							description: "Username of the profile to get",
+							description: "Name of the profile to get",
 							schema: {
-								$ref: "#/definitions/Username"
+								$ref: "#/definitions/Name"
 							}
 						}
 					],
@@ -291,11 +296,11 @@ function get() {
 							schema: {
 								type: "object",
 								properties: {
-									username: {
+									name: {
 										type: "string",
 										minLength: 4,
 										maxLength: 52,
-										description: "The username (handle) of the user"
+										description: "The name (handle) of the user"
 									},
 									email: {
 										type: "string",
@@ -334,9 +339,9 @@ function get() {
 			}
 		},
 		definitions: {
-			UserLoginRequest: schema.user.properties.login,
-			UserRegisterRequest: schema.user.properties.register,
-			Username: schema.user.properties.doc.name,
+			UserLoginRequest: schema.user.properties.login.properties.body,
+			UserRegisterRequest: schema.user.properties.register.properties.body,
+			Name: schema.user.properties.doc.name,
 			GeneralError: {
 				properties: {
 					error: {
