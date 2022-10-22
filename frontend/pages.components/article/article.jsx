@@ -11,7 +11,7 @@ import api from "../../api";
 import Comment from "./components/comment";
 
 @connect(
-	state => ({
+	(state) => ({
 		user: state.user
 	})
 )
@@ -31,9 +31,9 @@ class Article extends React.Component {
 	@autobind
 	async getArticle() {
 		try {
-			const slug = this.props.slug;
+			const { slug } = this.props;
 			const { article } = await api.article.get(slug);
-			this.setState({ data: article, loading: false })
+			return this.setState({ data: article, loading: false });
 		} catch (error) {
 			console.error(error);
 			return window.alert(error?.message);
