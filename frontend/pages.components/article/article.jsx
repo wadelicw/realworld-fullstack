@@ -90,14 +90,17 @@ class Article extends React.Component {
 
 	@autobind
 	async remove(slug) {
+		this.setState({ loading: true });
 		try {
 			if (window.confirm("Are you sure to remove this article?")) {
 				await api.article.remove(slug);
+				this.setState({ loading: false });
 				return Router.replace("/");
 			}
-			return;
+			return true;
 		} catch (error) {
 			console.error(error);
+			this.setState({ loading: false });
 			return window.alert(error?.message);
 		}
 	}
@@ -132,10 +135,10 @@ class Article extends React.Component {
 										}
 
 										if (author?.following) {
-											this.unFollow(author?.name);
-										} else {
-											this.follow(author?.name);
+											return this.unFollow(author?.name);
 										}
+
+										return this.follow(author?.name);
 									}}
 								>
 									<i className={classnames(
@@ -153,10 +156,10 @@ class Article extends React.Component {
 										}
 
 										if (favorited) {
-											this.unFavorite(slug);
-										} else {
-											this.favorite(slug);
+											return this.unFavorite(slug);
 										}
+
+										return this.favorite(slug);
 									}}
 								>
 									<i className="ion-heart" />
@@ -249,12 +252,11 @@ class Article extends React.Component {
 			</>
 		);
 	}
-
 }
 
 Article.getInitialProps = function (context) {
 	const query = context.query || {};
-	const slug = query.slug;
+	const { slug } = query;
 	return { slug };
 };
 

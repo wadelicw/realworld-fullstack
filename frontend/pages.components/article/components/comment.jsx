@@ -27,7 +27,7 @@ class Comment extends React.Component {
 
 		try {
 			const { comments } = await api.article.getComment(slug);
-			this.setState({ data: comments })
+			return this.setState({ data: comments });
 		} catch (error) {
 			console.error(error);
 			return window.alert(error?.message);
@@ -79,13 +79,12 @@ class Comment extends React.Component {
 											placeholder="Write a comment..."
 											rows="3"
 											value={payload.body}
-											onChange={event =>
-												this.setState(
-													Immutable
-														.Map(this.state)
-														.setIn(["payload", "body"], event.target.value)
-														.toJS()
-												)
+											onChange={(event) => this.setState(
+												Immutable
+													.Map(this.state)
+													.setIn(["payload", "body"], event.target.value)
+													.toJS()
+											)
 											}
 										/>
 									</div>
@@ -152,7 +151,6 @@ class Comment extends React.Component {
 			</div>
 		);
 	}
-
 }
 
 export default Comment;

@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import api from "../../api";
 
 @connect(
-	state => ({
+	(state) => ({
 		user: state.user
 	})
 )
@@ -49,12 +49,14 @@ class Profile extends React.Component {
 		try {
 			const [{ profile }, { articles, count }] = await Promise.all([
 				api.profile.getProfile(name),
-				api.article.list(payload),
+				api.article.list(payload)
 			]);
-			this.setState({ data: profile, articles, count, loading: false })
+			this.setState({
+				data: profile, articles, count, loading: false
+			});
 		} catch (error) {
 			console.error(error);
-			return window.alert(error?.message);
+			window.alert(error?.message);
 		}
 	}
 
@@ -64,10 +66,10 @@ class Profile extends React.Component {
 
 		try {
 			const { profile } = await api.profile.follow(name);
-			this.setState({ data: profile })
+			this.setState({ data: profile });
 		} catch (error) {
 			console.error(error);
-			return window.alert(error?.message);
+			window.alert(error?.message);
 		}
 	}
 
@@ -77,17 +79,19 @@ class Profile extends React.Component {
 
 		try {
 			const { profile } = await api.profile.unFollow(name);
-			this.setState({ data: profile })
+			this.setState({ data: profile });
 		} catch (error) {
 			console.error(error);
-			return window.alert(error?.message);
+			window.alert(error?.message);
 		}
 	}
 
 	render() {
-		const { bio, following, image, name } = this.state.data;
+		const {
+			bio, following, image, name
+		} = this.state.data;
 		const { articles, payload } = this.state;
-		const profileName = this.props.profileName;
+		const { profileName } = this.props;
 
 		return (
 			<>
@@ -114,27 +118,27 @@ class Profile extends React.Component {
 												Edit Profile Settings
 											</button>
 										) : (
-												<button
-													className="btn btn-sm btn-outline-secondary action-btn"
-													onClick={() => {
-														if (!this.props.user.accessToken) {
-															return Router.replace("/login");
-														}
+											<button
+												className="btn btn-sm btn-outline-secondary action-btn"
+												onClick={() => {
+													if (!this.props.user.accessToken) {
+														return Router.replace("/login");
+													}
 
-														if (following) {
-															this.unFollow();
-														} else {
-															this.follow();
-														}
-													}}
-												>
-													<i className={classnames(
-														following ? "ion-minus-round" : "ion-plus-round"
-													)} />
-													&nbsp;
-													{following ? "Unfollow" : "Follow"} {name}
-												</button>
-											)
+													if (following) {
+														return this.unFollow();
+													}
+
+													return this.follow();
+												}}
+											>
+												<i className={classnames(
+													following ? "ion-minus-round" : "ion-plus-round"
+												)} />
+												&nbsp;
+												{following ? "Unfollow" : "Follow"} {name}
+											</button>
+										)
 									}
 								</div>
 
@@ -155,8 +159,7 @@ class Profile extends React.Component {
 													.Map(this.state)
 													.setIn(["payload", "author"], profileName)
 													.setIn(["payload", "favorited"], "")
-													.toJS()
-												,
+													.toJS(),
 												this.getProfile
 											)}
 										>
@@ -176,8 +179,7 @@ class Profile extends React.Component {
 													.Map(this.state)
 													.setIn(["payload", "favorited"], profileName)
 													.setIn(["payload", "author"], "")
-													.toJS()
-												,
+													.toJS(),
 												this.getProfile
 											)}
 										>
@@ -217,12 +219,13 @@ class Profile extends React.Component {
 													<p>Read more...</p>
 													<ul className="tag-list">
 														{
-															row?.tagList?.length > 0 && row.tagList.map((row, index) => (
+															row?.tagList?.length > 0
+															&& row.tagList.map((item, itemIndex) => (
 																<li
 																	className="tag-default tag-pill tag-outline"
-																	key={index}
+																	key={itemIndex}
 																>
-																	{row}
+																	{item}
 																</li>
 															))
 														}
@@ -243,7 +246,6 @@ class Profile extends React.Component {
 			</>
 		);
 	}
-
 }
 
 Profile.getInitialProps = function (context) {

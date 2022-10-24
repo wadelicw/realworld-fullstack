@@ -8,12 +8,11 @@ import { connect } from "react-redux";
 import api from "../../api";
 
 @connect(
-	state => ({
+	(state) => ({
 		user: state.user
 	})
 )
 class Editor extends React.Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -24,7 +23,7 @@ class Editor extends React.Component {
 				body: "",
 				tagList: []
 			},
-			data: {},
+			data: {}
 		};
 	}
 
@@ -48,10 +47,10 @@ class Editor extends React.Component {
 				},
 				data: article,
 				loading: false
-			})
+			});
 		} catch (error) {
 			console.error(error);
-			return window.alert(error?.message);
+			window.alert(error?.message);
 		}
 	}
 
@@ -73,7 +72,7 @@ class Editor extends React.Component {
 
 			if (data.author?.name !== user.user) {
 				window.alert("Only the author of the article can update the article");
-				return Router.replace(`/`);
+				return Router.replace("/");
 			}
 
 			await api.article.update(data.slug, this.state.payload);
@@ -85,7 +84,9 @@ class Editor extends React.Component {
 	}
 
 	render() {
-		const { title, description, body, tagList } = this.state.payload;
+		const {
+			title, description, body, tagList
+		} = this.state.payload;
 		const { slug, user } = this.props;
 
 		return (
@@ -105,13 +106,12 @@ class Editor extends React.Component {
 												className="form-control form-control-lg"
 												placeholder="Article Title"
 												value={title}
-												onChange={(event) =>
-													this.setState(
-														Immutable
-															.Map(this.state)
-															.setIn(["payload", "title"], event.target.value)
-															.toJS()
-													)
+												onChange={(event) => this.setState(
+													Immutable
+														.Map(this.state)
+														.setIn(["payload", "title"], event.target.value)
+														.toJS()
+												)
 												}
 											/>
 										</fieldset>
@@ -121,13 +121,12 @@ class Editor extends React.Component {
 												className="form-control"
 												placeholder="What's this article about?"
 												value={description}
-												onChange={(event) =>
-													this.setState(
-														Immutable
-															.Map(this.state)
-															.setIn(["payload", "description"], event.target.value)
-															.toJS()
-													)
+												onChange={(event) => this.setState(
+													Immutable
+														.Map(this.state)
+														.setIn(["payload", "description"], event.target.value)
+														.toJS()
+												)
 												}
 											/>
 										</fieldset>
@@ -137,13 +136,12 @@ class Editor extends React.Component {
 												rows="8"
 												placeholder="Write your article (in markdown)"
 												value={body}
-												onChange={(event) =>
-													this.setState(
-														Immutable
-															.Map(this.state)
-															.setIn(["payload", "body"], event.target.value)
-															.toJS()
-													)
+												onChange={(event) => this.setState(
+													Immutable
+														.Map(this.state)
+														.setIn(["payload", "body"], event.target.value)
+														.toJS()
+												)
 												}
 											/>
 										</fieldset>
@@ -154,19 +152,16 @@ class Editor extends React.Component {
 												placeholder="Enter tags"
 												onKeyPress={(event) => {
 													if (event.key === "Enter") {
-														this.setState(
-															Immutable
-																.Map(this.state)
-																.updateIn(
-																	["payload", "tagList"],
-																	(array) => {
-																		array.push(event.target.value);
-																		return array;
-																	}
-																)
-																.toJS()
-														);
-
+														this.setState(Immutable
+															.Map(this.state)
+															.updateIn(
+																["payload", "tagList"],
+																(array) => {
+																	array.push(event.target.value);
+																	return array;
+																}
+															)
+															.toJS());
 														event.target.value = "";
 													}
 												}}
@@ -185,7 +180,10 @@ class Editor extends React.Component {
 																		.Map(this.state)
 																		.updateIn(
 																			["payload", "tagList"],
-																			(array) => array.filter((item) => item !== row)
+																			(array) => array
+																				.filter(
+																					(item) => item !== row
+																				)
 																		)
 																		.toJS()
 																)}
@@ -199,10 +197,10 @@ class Editor extends React.Component {
 										<button
 											className="btn btn-lg pull-xs-right btn-primary"
 											type="button"
-											onClick={() => slug ? this.update(user) : this.create()}
+											onClick={() => (slug ? this.update(user) : this.create())}
 										>
 											{slug ? "Update" : "Publish"} Article
-                        				</button>
+										</button>
 									</fieldset>
 								</form>
 							</div>
@@ -213,14 +211,12 @@ class Editor extends React.Component {
 			</>
 		);
 	}
-
 }
 
 Editor.getInitialProps = function (context) {
 	const query = context.query || {};
-	const slug = query.slug;
+	const { slug } = query;
 	return { slug };
 };
-
 
 export default Editor;

@@ -9,13 +9,12 @@ import api from "../../api";
 import { setUser } from "../../features/user/userSlice";
 
 @connect(
-	state => ({
+	(state) => ({
 		user: state.user
 	}),
 	{ setUser }
 )
 class Settings extends React.Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -44,7 +43,7 @@ class Settings extends React.Component {
 
 		try {
 			const { user } = await api.user.me(accessToken);
-			this.setState({ loading: false, payload: { ...user, password: "" } });
+			return this.setState({ loading: false, payload: { ...user, password: "" } });
 		} catch (error) {
 			console.error(error);
 			return window.alert(error?.message);
@@ -65,7 +64,7 @@ class Settings extends React.Component {
 			this.setState({ loading: false, payload: { ...user, password: "" } });
 		} catch (error) {
 			console.error(error);
-			return window.alert(error?.message);
+			window.alert(error?.message);
 		}
 	}
 
@@ -77,7 +76,9 @@ class Settings extends React.Component {
 	}
 
 	render() {
-		const { email, name, bio, image, password } = this.state.payload;
+		const {
+			email, name, bio, image, password
+		} = this.state.payload;
 		const { loading } = this.state;
 
 		return (
@@ -101,13 +102,12 @@ class Settings extends React.Component {
 														type="text"
 														placeholder="URL of profile picture"
 														value={image}
-														onChange={(event) =>
-															this.setState(
-																Immutable
-																	.Map(this.state)
-																	.setIn(["payload", "image"], event.target.value)
-																	.toJS()
-															)
+														onChange={(event) => this.setState(
+															Immutable
+																.Map(this.state)
+																.setIn(["payload", "image"], event.target.value)
+																.toJS()
+														)
 														}
 													/>
 												</fieldset>
@@ -117,13 +117,12 @@ class Settings extends React.Component {
 														type="text"
 														placeholder="Your Name"
 														value={name}
-														onChange={(event) =>
-															this.setState(
-																Immutable
-																	.Map(this.state)
-																	.setIn(["payload", "name"], event.target.value)
-																	.toJS()
-															)
+														onChange={(event) => this.setState(
+															Immutable
+																.Map(this.state)
+																.setIn(["payload", "name"], event.target.value)
+																.toJS()
+														)
 														}
 													/>
 												</fieldset>
@@ -133,13 +132,12 @@ class Settings extends React.Component {
 														rows="8"
 														placeholder="Short bio about you"
 														value={bio}
-														onChange={(event) =>
-															this.setState(
-																Immutable
-																	.Map(this.state)
-																	.setIn(["payload", "bio"], event.target.value)
-																	.toJS()
-															)
+														onChange={(event) => this.setState(
+															Immutable
+																.Map(this.state)
+																.setIn(["payload", "bio"], event.target.value)
+																.toJS()
+														)
 														}
 													/>
 												</fieldset>
@@ -149,13 +147,12 @@ class Settings extends React.Component {
 														type="text"
 														placeholder="Email"
 														value={email}
-														onChange={(event) =>
-															this.setState(
-																Immutable
-																	.Map(this.state)
-																	.setIn(["payload", "email"], event.target.value)
-																	.toJS()
-															)
+														onChange={(event) => this.setState(
+															Immutable
+																.Map(this.state)
+																.setIn(["payload", "email"], event.target.value)
+																.toJS()
+														)
 														}
 													/>
 												</fieldset>
@@ -165,13 +162,12 @@ class Settings extends React.Component {
 														type="password"
 														placeholder="Password"
 														value={password}
-														onChange={(event) =>
-															this.setState(
-																Immutable
-																	.Map(this.state)
-																	.setIn(["payload", "password"], event.target.value)
-																	.toJS()
-															)
+														onChange={(event) => this.setState(
+															Immutable
+																.Map(this.state)
+																.setIn(["payload", "password"], event.target.value)
+																.toJS()
+														)
 														}
 													/>
 												</fieldset>
@@ -202,7 +198,6 @@ class Settings extends React.Component {
 			</>
 		);
 	}
-
 }
 
 export default Settings;

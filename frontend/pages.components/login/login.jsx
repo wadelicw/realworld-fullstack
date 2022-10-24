@@ -1,24 +1,22 @@
 import React from "react";
 import Link from "next/link";
-import Router from "next/router";
 import autobind from "autobind-decorator";
 import Immutable from "immutable";
 import { NextSeo } from "next-seo";
 import { connect } from "react-redux";
-import { withRouter } from "next/router";
+import Router, { withRouter } from "next/router";
 
 import api from "../../api";
 import { setUser } from "../../features/user/userSlice";
 
 @withRouter
 @connect(
-	state => ({
+	(state) => ({
 		user: state.user
 	}),
 	{ setUser }
 )
 class Login extends React.Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -42,7 +40,7 @@ class Login extends React.Component {
 			const { user } = await api.user.login({ email, password });
 			this.props.setUser({ user: user.name, accessToken: user.token });
 			localStorage.setItem(process.env.NEXT_PUBLIC_ACCESS_TOKEN_KEY, user.token);
-			return Router.replace("/profile/" + user.name);
+			return Router.replace(`/profile/${user.name}`);
 		} catch (error) {
 			console.error(error);
 			return window.alert(error?.message);
@@ -76,13 +74,12 @@ class Login extends React.Component {
 											className="form-control form-control-lg"
 											type="text"
 											placeholder="Email"
-											onChange={event =>
-												this.setState(
-													Immutable
-														.Map(this.state)
-														.setIn(["payload", "email"], event.target.value)
-														.toJS()
-												)
+											onChange={(event) => this.setState(
+												Immutable
+													.Map(this.state)
+													.setIn(["payload", "email"], event.target.value)
+													.toJS()
+											)
 											}
 										/>
 									</fieldset>
@@ -91,13 +88,12 @@ class Login extends React.Component {
 											className="form-control form-control-lg"
 											type="password"
 											placeholder="Password"
-											onChange={event =>
-												this.setState(
-													Immutable
-														.Map(this.state)
-														.setIn(["payload", "password"], event.target.value)
-														.toJS()
-												)
+											onChange={(event) => this.setState(
+												Immutable
+													.Map(this.state)
+													.setIn(["payload", "password"], event.target.value)
+													.toJS()
+											)
 											}
 										/>
 									</fieldset>
@@ -118,7 +114,6 @@ class Login extends React.Component {
 			</>
 		);
 	}
-
 }
 
 export default Login;

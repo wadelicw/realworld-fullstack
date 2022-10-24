@@ -10,7 +10,7 @@ import { connect } from "react-redux";
 import api from "../../api";
 
 @connect(
-	state => ({
+	(state) => ({
 		user: state.user
 	})
 )
@@ -32,6 +32,7 @@ class Home extends React.Component {
 
 	@autobind
 	getPayload() {
+		this.setState({ loading: true });
 		return {
 			tag: "",
 			followedBy: "",
@@ -43,15 +44,17 @@ class Home extends React.Component {
 	@autobind
 	async listArticle() {
 		try {
-			const payload = this.state.payload;
+			const { payload } = this.state;
 			const [{ articles, count }, { tags }] = await Promise.all([
 				api.article.list(payload),
 				api.tag.list()
 			]);
-			this.setState({ data: articles, count, tags, loading: false });
+			this.setState({
+				data: articles, count, tags, loading: false
+			});
 		} catch (error) {
 			console.error(error);
-			return window.alert(error?.message);
+			window.alert(error?.message);
 		}
 	}
 
@@ -84,8 +87,7 @@ class Home extends React.Component {
 													.Map(this.state)
 													.setIn(["payload", "followedBy"], user?.user)
 													.setIn(["payload", "tag"], "")
-													.toJS()
-												,
+													.toJS(),
 												this.listArticle
 											)}
 										>
@@ -101,11 +103,10 @@ class Home extends React.Component {
 										</li>
 										<li
 											className="nav-item pointer"
-											onClick={() =>
-												this.setState(
-													{ payload: this.getPayload() },
-													this.listArticle
-												)}
+											onClick={() => this.setState(
+												{ payload: this.getPayload() },
+												this.listArticle
+											)}
 										>
 											<a className={classnames(
 												"nav-link",
@@ -171,8 +172,7 @@ class Home extends React.Component {
 														Immutable
 															.Map(this.state)
 															.setIn(["payload", "tag"], row)
-															.toJS()
-														,
+															.toJS(),
 														this.listArticle
 													)}
 												>
@@ -191,7 +191,6 @@ class Home extends React.Component {
 			</>
 		);
 	}
-
 }
 
 export default Home;
